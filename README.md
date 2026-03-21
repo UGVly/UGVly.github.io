@@ -3,6 +3,7 @@
 Static personal homepage with:
 
 - bilingual homepage content
+- a printable HTML CV under `/cv/`
 - a local web server
 - a markdown-to-blog generator under `/blog/`
 

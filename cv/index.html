@@ -1,0 +1,375 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Zhou Jiang | CV</title>
+    <meta
+      name="description"
+      content="Curriculum vitae of Zhou Jiang, undergraduate AI researcher focused on generative modeling, diffusion models, alignment, and representation learning."
+    />
+    <link rel="preconnect" href="https://fonts.googleapis.com" />
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+    <link
+      href="https://fonts.googleapis.com/css2?family=Manrope:wght@400;500;700;800&family=Noto+Serif:wght@500;700&display=swap"
+      rel="stylesheet"
+    />
+    <style>
+      :root {
+        --bg: #f4efe6;
+        --panel: #fffaf2;
+        --text: #1f1a16;
+        --muted: #655a52;
+        --line: rgba(31, 26, 22, 0.12);
+        --accent: #c44f2a;
+      }
+
+      * {
+        box-sizing: border-box;
+      }
+
+      body {
+        margin: 0;
+        color: var(--text);
+        background:
+          radial-gradient(circle at top left, rgba(196, 79, 42, 0.12), transparent 28%),
+          linear-gradient(180deg, #efe4d1 0%, var(--bg) 100%);
+        font-family: "Manrope", sans-serif;
+      }
+
+      a {
+        color: inherit;
+        text-decoration: none;
+      }
+
+      .shell {
+        width: min(960px, calc(100% - 32px));
+        margin: 0 auto;
+        padding: 28px 0 60px;
+      }
+
+      .topbar {
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+        gap: 16px;
+        margin-bottom: 18px;
+      }
+
+      .topbar a,
+      .topbar button {
+        border: 1px solid var(--line);
+        border-radius: 999px;
+        padding: 10px 14px;
+        background: rgba(255, 255, 255, 0.45);
+        color: var(--text);
+        font: inherit;
+        font-weight: 700;
+        cursor: pointer;
+      }
+
+      .sheet {
+        border: 1px solid var(--line);
+        border-radius: 28px;
+        background: var(--panel);
+        padding: 42px;
+        box-shadow: 0 24px 60px rgba(86, 55, 37, 0.12);
+      }
+
+      .header {
+        display: flex;
+        justify-content: space-between;
+        gap: 20px;
+        align-items: end;
+        border-bottom: 1px solid var(--line);
+        padding-bottom: 20px;
+        margin-bottom: 28px;
+      }
+
+      h1,
+      h2,
+      h3 {
+        font-family: "Noto Serif", serif;
+      }
+
+      h1 {
+        margin: 0;
+        font-size: clamp(2.1rem, 5vw, 3.2rem);
+        line-height: 1;
+      }
+
+      .tagline {
+        margin: 10px 0 0;
+        color: var(--muted);
+        max-width: 46ch;
+        line-height: 1.7;
+      }
+
+      .contact {
+        text-align: right;
+        color: var(--muted);
+        line-height: 1.8;
+      }
+
+      .section {
+        margin-top: 28px;
+      }
+
+      .section h2 {
+        margin: 0 0 14px;
+        font-size: 1.08rem;
+        letter-spacing: 0.08em;
+        text-transform: uppercase;
+      }
+
+      .grid-two {
+        display: grid;
+        grid-template-columns: 1fr 1fr;
+        gap: 20px;
+      }
+
+      .entry {
+        margin-bottom: 18px;
+      }
+
+      .entry-header {
+        display: flex;
+        justify-content: space-between;
+        gap: 16px;
+        align-items: baseline;
+      }
+
+      .entry h3 {
+        margin: 0;
+        font-size: 1.12rem;
+      }
+
+      .entry .meta,
+      .entry .date,
+      p,
+      li {
+        color: var(--muted);
+        line-height: 1.75;
+      }
+
+      .entry .meta {
+        margin: 4px 0 8px;
+        font-weight: 600;
+      }
+
+      .date {
+        white-space: nowrap;
+        font-weight: 700;
+      }
+
+      ul {
+        margin: 8px 0 0;
+        padding-left: 20px;
+      }
+
+      .publication {
+        border: 1px solid var(--line);
+        border-radius: 20px;
+        padding: 18px 20px;
+        background: rgba(255, 255, 255, 0.44);
+      }
+
+      .publication p {
+        margin: 8px 0 0;
+      }
+
+      .skills-list,
+      .awards-list {
+        margin: 0;
+        padding-left: 20px;
+      }
+
+      .footer-note {
+        margin-top: 22px;
+        color: var(--muted);
+        font-size: 0.95rem;
+      }
+
+      @media (max-width: 720px) {
+        .sheet {
+          padding: 24px;
+        }
+
+        .header,
+        .entry-header,
+        .topbar,
+        .grid-two {
+          grid-template-columns: 1fr;
+          flex-direction: column;
+          align-items: flex-start;
+        }
+
+        .contact {
+          text-align: left;
+        }
+
+        .date {
+          white-space: normal;
+        }
+      }
+
+      @media print {
+        body {
+          background: #fff;
+        }
+
+        .shell {
+          width: 100%;
+          margin: 0;
+          padding: 0;
+        }
+
+        .topbar {
+          display: none;
+        }
+
+        .sheet {
+          border: 0;
+          box-shadow: none;
+          border-radius: 0;
+          padding: 0;
+        }
+      }
+    </style>
+  </head>
+  <body>
+    <div class="shell">
+      <div class="topbar">
+        <a href="/">Back to Home</a>
+        <button type="button" onclick="window.print()">Print / Save as PDF</button>
+      </div>
+
+      <main class="sheet">
+        <header class="header">
+          <div>
+            <h1>Zhou Jiang</h1>
+            <p class="tagline">
+              Undergraduate AI researcher focused on generative modeling, diffusion models,
+              preference alignment, inference-time guidance, and representation learning.
+            </p>
+          </div>
+          <div class="contact">
+            <div><a href="mailto:jiangzhou130@hotmail.com">jiangzhou130@hotmail.com</a></div>
+            <div><a href="tel:+8615062675639">+86 150-6267-5639</a> (WeChat)</div>
+            <div><a href="https://ugvly.github.io/">ugvly.github.io</a></div>
+          </div>
+        </header>
+
+        <section class="section">
+          <h2>Education</h2>
+          <div class="entry">
+            <div class="entry-header">
+              <h3>South China University of Technology</h3>
+              <div class="date">2022 - Present</div>
+            </div>
+            <div class="meta">B.Eng. in Computer Science and Technology + Finance (Dual-degree Program)</div>
+          </div>
+        </section>
+
+        <section class="section">
+          <h2>Selected Publication</h2>
+          <article class="publication">
+            <h3>Rethinking Preference Alignment for Diffusion Models with Classifier-Free Guidance</h3>
+            <p>Zhou Jiang, Zhen Liu, Yandong Wen</p>
+            <p>arXiv preprint, 2026</p>
+            <p><a href="https://arxiv.org/abs/2602.18799">arXiv: 2602.18799</a></p>
+          </article>
+        </section>
+
+        <section class="section">
+          <h2>Research Experience</h2>
+
+          <div class="entry">
+            <div class="entry-header">
+              <h3>Visiting Student, Westlake University</h3>
+              <div class="date">2025.04 - Present</div>
+            </div>
+            <div class="meta">Advisors: Yandong Wen, Zhen Liu</div>
+            <ul>
+              <li>Study preference optimization for diffusion models from the perspective of classifier-free guidance.</li>
+              <li>Build end-to-end pipelines for preference data processing, diffusion finetuning, evaluation, and inference-time guidance.</li>
+              <li>Conduct systematic experiments on reward, win rate, aesthetics, semantic alignment, and fidelity-diversity tradeoffs.</li>
+              <li>Develop research questions around the foundations of generative modeling and their connections to representation learning.</li>
+              <li>Produce an arXiv preprint on preference alignment for diffusion models.</li>
+            </ul>
+          </div>
+
+          <div class="entry">
+            <div class="entry-header">
+              <h3>Research Intern, GMC Lab, South China University of Technology</h3>
+              <div class="date">2024</div>
+            </div>
+            <div class="meta">Advisor: Yue-Jiao Gong</div>
+            <ul>
+              <li>Worked on offline reinforcement learning for dynamic algorithm configuration in meta black-box optimization.</li>
+              <li>Implemented most experiments and major parts of the codebase with attention to reproducibility and robust evaluation.</li>
+              <li>Explored Q-function decomposition for long-horizon optimization and Mamba-based RL architectures.</li>
+            </ul>
+          </div>
+
+          <div class="entry">
+            <div class="entry-header">
+              <h3>Independent Research on Weakly Supervised Semantic Segmentation</h3>
+              <div class="date">2023</div>
+            </div>
+            <div class="meta">Supported by National Innovation and Entrepreneurship Project Funding</div>
+            <ul>
+              <li>Studied pseudo-label refinement methods for weakly supervised semantic segmentation.</li>
+              <li>Achieved 77.52% / 77.73% mIoU on PASCAL VOC 2012 val/test under the non-SAM setting.</li>
+              <li>Contributed to a paper later accepted by <em>Journal of Visual Communication and Image Representation</em>.</li>
+            </ul>
+          </div>
+        </section>
+
+        <section class="section">
+          <h2>Selected Projects</h2>
+          <div class="grid-two">
+            <div class="entry">
+              <h3>Handwritten Formula Recognition and Text Eradication</h3>
+              <div class="meta">Computer Vision, OCR</div>
+              <ul>
+                <li>Developed a model for handwritten formula recognition and LaTeX conversion.</li>
+                <li>Built a UNet-Transformer based system for removing handwritten text from document images.</li>
+              </ul>
+            </div>
+            <div class="entry">
+              <h3>Lightweight LLM Finetuning for Financial Expertise</h3>
+              <div class="meta">LLM, Domain Adaptation</div>
+              <ul>
+                <li>Finetuned a 1.5B Qwen model for finance-oriented question answering and analysis.</li>
+                <li>Improved task accuracy from 20% to 70% through hybrid supervision and iterative evaluation.</li>
+              </ul>
+            </div>
+          </div>
+        </section>
+
+        <section class="section grid-two">
+          <div>
+            <h2>Honors and Awards</h2>
+            <ul class="awards-list">
+              <li>China Undergraduate Mathematics Competition, Provincial First Prize, 2023</li>
+              <li>Mathematical Contest in Modeling (MCM/ICM), International Second Prize, 2023 and 2024</li>
+              <li>HuaShuCup Mathematical Modeling Competition, National First Prize, 2024</li>
+            </ul>
+          </div>
+          <div>
+            <h2>Skills</h2>
+            <ul class="skills-list">
+              <li>Python, PyTorch, PyTorch Lightning, C/C++, MATLAB, SQL, JavaScript/TypeScript</li>
+              <li>Experiment design, reproducible evaluation, model finetuning, preference data pipelines</li>
+            </ul>
+          </div>
+        </section>
+
+        <p class="footer-note">
+          This CV is also part of my homepage repository and can be printed directly from the browser.
+        </p>
+      </main>
+    </div>
+  </body>
+</html>
