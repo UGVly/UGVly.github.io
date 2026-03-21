@@ -64,7 +64,7 @@ const translations = {
     "publications.paper1.title":
       "Rethinking Preference Alignment for Diffusion Models with Classifier-Free Guidance",
     "publications.paper1.text":
-      "Zhou Jiang, Zhen Liu, Yandong Wen. A study of preference optimization for diffusion models, with a principled connection between classifier-free guidance and preference learning.",
+      "Zhou Jiang, Yandong Wen, Zhen Liu. A study of preference optimization for diffusion models, with a principled connection between classifier-free guidance and preference learning.",
     "publications.paper1.link1": "arXiv",
     "publications.more": "More Publications",
     "publications.paper2.tag": "Co-author",
@@ -154,7 +154,7 @@ const translations = {
     "publications.paper1.tag": "预印本",
     "publications.paper1.title": "Rethinking Preference Alignment for Diffusion Models with Classifier-Free Guidance",
     "publications.paper1.text":
-      "Zhou Jiang, Zhen Liu, Yandong Wen. 该工作研究扩散模型中的偏好优化问题，并尝试从原理上建立 classifier-free guidance 与偏好学习之间的联系。",
+      "Zhou Jiang, Yandong Wen, Zhen Liu. 该工作研究扩散模型中的偏好优化问题，并尝试从原理上建立 classifier-free guidance 与偏好学习之间的联系。",
     "publications.paper1.link1": "arXiv",
     "publications.more": "更多论文",
     "publications.paper2.tag": "合作论文",
