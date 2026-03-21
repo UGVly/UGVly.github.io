@@ -1,0 +1,11 @@
+{
+  "name": "personal-homepage",
+  "version": "1.0.0",
+  "private": true,
+  "description": "A standalone personal homepage project.",
+  "scripts": {
+    "build:blog": "node build-blog.js",
+    "dev": "node server.js",
+    "start": "node server.js"
+  }
+}

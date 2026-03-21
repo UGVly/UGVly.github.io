@@ -1,0 +1,254 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Zhou Jiang | AI Researcher</title>
+    <meta
+      name="description"
+      content="Zhou Jiang is an undergraduate AI researcher working on diffusion models, preference alignment, reinforcement learning, and representation learning."
+    />
+    <link rel="preconnect" href="https://fonts.googleapis.com" />
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+    <link
+      href="https://fonts.googleapis.com/css2?family=Manrope:wght@400;500;700;800&family=Noto+Serif:wght@500;700&family=Noto+Serif+SC:wght@500;700&display=swap"
+      rel="stylesheet"
+    />
+    <link rel="stylesheet" href="./styles.css" />
+  </head>
+  <body>
+    <div class="page-shell">
+      <header class="site-header">
+        <a class="brand" href="#top">ZJ</a>
+        <div class="header-actions">
+          <nav class="site-nav">
+            <a href="#about" data-i18n="nav.about">About</a>
+            <a href="#research" data-i18n="nav.research">Research</a>
+            <a href="#publications" data-i18n="nav.publications">Publications</a>
+            <a href="./blog/index.html" data-i18n="nav.blog">Blog</a>
+            <a href="#contact" data-i18n="nav.contact">Contact</a>
+          </nav>
+          <button class="lang-toggle" type="button" aria-label="Switch language">
+            中文
+          </button>
+        </div>
+      </header>
+
+      <main id="top">
+        <section class="hero">
+          <div class="hero-copy reveal">
+            <p class="eyebrow" data-i18n="hero.eyebrow">Undergraduate AI Researcher</p>
+            <h1>
+              <span data-i18n="hero.name">Zhou Jiang</span>
+              <span data-i18n="hero.subtitle">Applying for PhD programs in generative modeling and machine learning.</span>
+            </h1>
+            <p class="hero-text" data-i18n="hero.text">
+              I am an undergraduate researcher at South China University of Technology and a visiting
+              student at Westlake University. My current work focuses on diffusion models, preference
+              alignment, reinforcement learning, and representation learning.
+            </p>
+            <div class="hero-actions">
+              <a class="button button-primary" href="#publications" data-i18n="hero.primaryCta">Selected Papers</a>
+              <a class="button button-secondary" href="./cv.pdf" target="_blank" rel="noreferrer" data-i18n="hero.secondaryCta">Download CV</a>
+            </div>
+          </div>
+
+          <aside class="hero-card reveal delay-1">
+            <p class="card-title" data-i18n="focus.title">Current Focus</p>
+            <ul class="focus-list">
+              <li data-i18n="focus.item1">Preference optimization for diffusion models</li>
+              <li data-i18n="focus.item2">Inference-time alignment and guidance</li>
+              <li data-i18n="focus.item3">Foundational theory of generative models</li>
+              <li data-i18n="focus.item4">Connections between generative modeling and representation learning</li>
+            </ul>
+            <div class="focus-history">
+              <p class="history-title" data-i18n="focus.historyTitle">Previously Explored</p>
+              <ul class="focus-list focus-list-compact">
+                <li data-i18n="focus.history1">Offline RL for black-box optimization</li>
+                <li data-i18n="focus.history2">Deep learning on financial data</li>
+              </ul>
+            </div>
+            <div class="stat-grid">
+              <article>
+                <strong data-i18n="stats.one.value">Westlake</strong>
+                <span data-i18n="stats.one.label">Visiting student</span>
+              </article>
+              <article>
+                <strong data-i18n="stats.two.value">Diffusion</strong>
+                <span data-i18n="stats.two.label">Alignment focus</span>
+              </article>
+              <article>
+                <strong data-i18n="stats.three.value">arXiv</strong>
+                <span data-i18n="stats.three.label">Recent preprint</span>
+              </article>
+            </div>
+          </aside>
+        </section>
+
+        <section id="about" class="panel reveal">
+          <div class="section-heading">
+            <p class="eyebrow" data-i18n="about.eyebrow">About</p>
+            <h2 data-i18n="about.title">Research-driven training with enough engineering depth to turn ideas into reproducible systems.</h2>
+          </div>
+          <div class="about-grid">
+            <p data-i18n="about.p1">
+              I am pursuing a dual degree in Computer Science and Technology plus Finance at South China
+              University of Technology. My goal is to pursue a PhD in machine learning, especially in
+              generative models and alignment.
+            </p>
+            <p data-i18n="about.p2">
+              I care about questions that connect principled learning objectives with practical model
+              behavior. In recent work, I have built end-to-end pipelines for preference data processing,
+              diffusion finetuning, evaluation, and inference-time guidance.
+            </p>
+          </div>
+        </section>
+
+        <section id="research" class="panel reveal">
+          <div class="section-heading">
+            <p class="eyebrow" data-i18n="research.eyebrow">Research Experience</p>
+            <h2 data-i18n="research.title">Projects that show both independent thinking and execution.</h2>
+          </div>
+          <div class="timeline">
+            <article>
+              <span data-i18n="research.item1.time">2025 - Now</span>
+              <div>
+                <h3 data-i18n="research.item1.title">Diffusion Alignment and Optimization, Westlake University</h3>
+                <p data-i18n="research.item1.text">
+                  Visiting student working with Yandong Wen and Zhen Liu on preference optimization for
+                  diffusion models. Built an end-to-end pipeline covering preference data, finetuning,
+                  plug-and-play guidance, and benchmark evaluation. The resulting work is currently
+                  available as an arXiv preprint.
+                </p>
+              </div>
+            </article>
+            <article>
+              <span data-i18n="research.item2.time">2024</span>
+              <div>
+                <h3 data-i18n="research.item2.title">MetaBBO via Offline Q-value Learning, SCUT GMC Lab</h3>
+                <p data-i18n="research.item2.text">
+                  Worked with Yuejiao Gong on reinforcement-learning-based dynamic algorithm
+                  configuration for black-box optimization. Implemented most experiments and core code,
+                  with emphasis on reproducibility and robust comparison across tasks.
+                </p>
+              </div>
+            </article>
+            <article>
+              <span data-i18n="research.item3.time">Side Work</span>
+              <div>
+                <h3 data-i18n="research.item3.title">Applied Computer Vision and LLM Projects</h3>
+                <p data-i18n="research.item3.text">
+                  Built systems for handwritten formula recognition, text eradication from document
+                  images, and lightweight finetuning of a 1.5B Qwen model for finance-oriented QA and
+                  analysis.
+                </p>
+              </div>
+            </article>
+          </div>
+        </section>
+
+        <section id="publications" class="panel reveal">
+          <div class="section-heading">
+            <p class="eyebrow" data-i18n="publications.eyebrow">Selected Publications</p>
+            <h2 data-i18n="publications.title">Evidence that the research story is already forming before PhD applications.</h2>
+          </div>
+          <div class="publication-list">
+            <article class="publication-card">
+              <p class="project-tag" data-i18n="publications.paper1.tag">Preprint</p>
+              <h3 data-i18n="publications.paper1.title">Rethinking Preference Alignment for Diffusion Models with Classifier-Free Guidance</h3>
+              <p data-i18n="publications.paper1.text">
+                Zhou Jiang, Zhen Liu, Yandong Wen. A study of preference optimization for diffusion
+                models, with a principled connection between classifier-free guidance and preference
+                learning.
+              </p>
+              <div class="link-row">
+                <a href="https://arxiv.org/abs/2602.18799" target="_blank" rel="noreferrer" data-i18n="publications.paper1.link1">arXiv</a>
+              </div>
+            </article>
+          </div>
+          <details class="secondary-publications">
+            <summary data-i18n="publications.more">More Publications</summary>
+            <div class="publication-list secondary-list">
+              <article class="publication-card">
+                <p class="project-tag" data-i18n="publications.paper2.tag">Co-author</p>
+                <h3>Meta-Black-Box-Optimization through Offline Q-function Learning</h3>
+                <p data-i18n="publications.paper2.text">
+                  ICML 2025 paper on offline reinforcement learning for meta black-box optimization,
+                  dynamic algorithm configuration, and Q-function decomposition.
+                </p>
+                <div class="link-row">
+                  <a href="https://proceedings.mlr.press/v267/ma25b.html" target="_blank" rel="noreferrer" data-i18n="publications.paper2.link1">Paper</a>
+                  <a href="https://github.com/MetaEvo/Q-Mamba" target="_blank" rel="noreferrer" data-i18n="publications.paper2.link2">Code</a>
+                </div>
+              </article>
+              <article class="publication-card">
+                <p class="project-tag" data-i18n="publications.paper3.tag">Co-author</p>
+                <h3>SPCNet: Serial Pyramid Convolutional Network for Remote Sensing Object Detection</h3>
+                <p data-i18n="publications.paper3.text">
+                  IEEE TGRS paper on multi-scale remote sensing object detection with a serial pyramid
+                  convolutional design.
+                </p>
+                <div class="link-row">
+                  <a href="https://doi.org/10.1109/TGRS.2025.3618250" target="_blank" rel="noreferrer" data-i18n="publications.paper3.link1">DOI</a>
+                </div>
+              </article>
+              <article class="publication-card">
+                <p class="project-tag" data-i18n="publications.paper4.tag">Co-author</p>
+                <h3>Salient Object Detection Enhanced Pseudo-labels for Weakly Supervised Semantic Segmentation</h3>
+                <p data-i18n="publications.paper4.text">
+                  JVCIR paper on pseudo-label refinement for weakly supervised semantic segmentation by
+                  integrating saliency cues.
+                </p>
+                <div class="link-row">
+                  <a href="https://doi.org/10.1016/j.jvcir.2025.104548" target="_blank" rel="noreferrer" data-i18n="publications.paper4.link1">DOI</a>
+                  <a href="https://github.com/UGVly/SOD-For-WSSS" target="_blank" rel="noreferrer" data-i18n="publications.paper4.link2">Code</a>
+                </div>
+              </article>
+            </div>
+          </details>
+        </section>
+
+        <section class="panel reveal">
+          <div class="section-heading">
+            <p class="eyebrow" data-i18n="extras.eyebrow">Awards and Skills</p>
+            <h2 data-i18n="extras.title">Strong signals beyond publication count.</h2>
+          </div>
+          <div class="about-grid">
+            <p data-i18n="extras.p1">
+              Honors include Provincial First Prize in the China Undergraduate Mathematics Competition,
+              International Second Prize in MCM/ICM in both 2023 and 2024, and National First Prize in
+              the HuaShuCup Mathematical Modeling Competition.
+            </p>
+            <p data-i18n="extras.p2">
+              I mainly work with Python, PyTorch, PyTorch Lightning, C/C++, MATLAB, SQL, and
+              JavaScript/TypeScript. I value reproducible experimentation, clean evaluation pipelines,
+              and clear technical communication.
+            </p>
+          </div>
+        </section>
+
+        <section id="contact" class="panel contact-panel reveal">
+          <div class="section-heading">
+            <p class="eyebrow" data-i18n="contact.eyebrow">Contact</p>
+            <h2 data-i18n="contact.title">If your group is working on generative modeling or alignment, I would be glad to connect.</h2>
+          </div>
+          <div class="contact-grid">
+            <a href="mailto:jiangzhou130@hotmail.com">jiangzhou130@hotmail.com</a>
+            <a href="tel:+8615062675639">+86 150-6267-5639</a>
+            <a href="./cv.pdf" target="_blank" rel="noreferrer" data-i18n="contact.cv">Curriculum Vitae</a>
+            <a href="./blog/index.html" data-i18n="contact.blog">Notes Blog</a>
+            <a href="https://www.scut.edu.cn/en/" target="_blank" rel="noreferrer" data-i18n="contact.links1">South China University of Technology</a>
+            <a href="https://en.westlake.edu.cn/" target="_blank" rel="noreferrer" data-i18n="contact.links2">Westlake University</a>
+            <a href="https://arxiv.org/abs/2602.18799" target="_blank" rel="noreferrer" data-i18n="contact.links3">Latest arXiv Preprint</a>
+          </div>
+        </section>
+      </main>
+    </div>
+
+    <button class="theme-toggle" type="button" aria-label="Toggle theme">
+      Toggle Theme
+    </button>
+
+    <script src="./script.js"></script>
+  </body>
+</html>

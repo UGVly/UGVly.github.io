@@ -1,0 +1,109 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Welcome to My Notes Blog</title>
+    <meta name="description" content="Welcome to My Notes Blog" />
+    <style>
+      :root {
+        --bg: #f4efe6;
+        --panel: #fff9f0;
+        --text: #1f1a16;
+        --muted: #655a52;
+        --line: rgba(31, 26, 22, 0.12);
+        --accent: #c44f2a;
+      }
+      * { box-sizing: border-box; }
+      body {
+        margin: 0;
+        color: var(--text);
+        background: linear-gradient(180deg, #efe4d1 0%, var(--bg) 100%);
+        font-family: "Segoe UI", sans-serif;
+      }
+      .shell {
+        width: min(900px, calc(100% - 32px));
+        margin: 0 auto;
+        padding: 32px 0 80px;
+      }
+      .panel {
+        border: 1px solid var(--line);
+        border-radius: 24px;
+        padding: 28px;
+        background: rgba(255, 249, 240, 0.92);
+      }
+      a { color: var(--accent); text-decoration: none; }
+      .nav {
+        display: flex;
+        gap: 16px;
+        margin-bottom: 20px;
+        color: var(--muted);
+      }
+      .eyebrow {
+        margin: 0 0 12px;
+        color: var(--accent);
+        text-transform: uppercase;
+        letter-spacing: 0.14em;
+        font-size: 0.78rem;
+        font-weight: 700;
+      }
+      h1, h2, h3 { line-height: 1.2; }
+      p, li { color: var(--muted); line-height: 1.8; }
+      pre {
+        overflow: auto;
+        padding: 16px;
+        border-radius: 16px;
+        background: #201d1a;
+        color: #f6f1e8;
+      }
+      code {
+        padding: 0.15em 0.35em;
+        border-radius: 6px;
+        background: rgba(31, 26, 22, 0.08);
+      }
+      pre code { background: transparent; padding: 0; }
+      .post-list {
+        display: grid;
+        gap: 14px;
+        margin-top: 24px;
+      }
+      .post-card {
+        border: 1px solid var(--line);
+        border-radius: 18px;
+        padding: 18px;
+        background: rgba(255, 255, 255, 0.4);
+      }
+      .post-card h2 {
+        margin: 0 0 8px;
+        font-size: 1.2rem;
+      }
+      .post-card p {
+        margin: 0;
+      }
+    </style>
+  </head>
+  <body>
+    <div class="shell">
+      <nav class="nav">
+        <a href="/">Home</a>
+        <a href="/blog/index.html">Blog</a>
+      </nav>
+      <section class="panel">
+        <p class="eyebrow">Notes / 笔记</p><h1>Welcome to My Notes Blog</h1><h1>Welcome to My Notes Blog</h1>
+<p>This directory is the source for the blog section under <code>/blog/</code>.</p>
+<ul>
+<li>Put your daily markdown notes here.</li>
+<li>Run <code>npm.cmd run build:blog</code>.</li>
+<li>The script will generate static HTML pages in <code>blog/</code>.</li>
+</ul>
+<h2>Tips</h2>
+<ul>
+<li>You can organize notes in subfolders.</li>
+<li>The first <code># Heading</code> will be used as the post title.</li>
+<li>This works well for research memos, reading notes, and experiment logs.</li>
+</ul>
+        
+      </section>
+    </div>
+  </body>
+</html>
