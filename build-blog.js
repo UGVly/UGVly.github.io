@@ -887,8 +887,8 @@ function getHeroPanelBeforeBackground() {
   if (disablePrivateDecor) {
     return `
           linear-gradient(90deg, rgba(255, 255, 255, 0), rgba(255, 255, 255, 0.08)),
-          radial-gradient(circle at 30% 50%, rgba(142, 166, 255, 0.16), rgba(142, 166, 255, 0)),
-          radial-gradient(circle at 72% 40%, rgba(210, 108, 153, 0.14), rgba(210, 108, 153, 0))
+          linear-gradient(180deg, rgba(16, 19, 33, 0.05), rgba(16, 19, 33, 0.12)),
+          url("${withBasePath("/assets/images/mai-hero.jpg")}")
     `.trim();
   }
 
@@ -903,7 +903,7 @@ function getContentPanelBeforeBackground() {
   if (disablePrivateDecor) {
     return `
           radial-gradient(circle, rgba(255, 255, 255, 0.06), rgba(255, 255, 255, 0)),
-          radial-gradient(circle at 62% 42%, rgba(178, 160, 255, 0.16), rgba(178, 160, 255, 0))
+          url("${withBasePath("/assets/images/mai-hero.jpg")}")
     `.trim();
   }
 

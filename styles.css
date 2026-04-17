@@ -151,11 +151,13 @@ img {
   height: calc(100% - 56px);
   border-radius: 28px 0 0 28px;
   background:
-    radial-gradient(circle at 18% 20%, rgba(255, 255, 255, 0.42), rgba(255, 255, 255, 0) 36%),
-    radial-gradient(circle at 64% 24%, rgba(210, 108, 153, 0.22), rgba(210, 108, 153, 0) 38%),
-    radial-gradient(circle at 42% 72%, rgba(142, 166, 255, 0.2), rgba(142, 166, 255, 0) 42%),
-    linear-gradient(180deg, rgba(255, 255, 255, 0.22), rgba(111, 99, 200, 0.12));
-  opacity: 0.9;
+    linear-gradient(90deg, rgba(255, 255, 255, 0), rgba(255, 255, 255, 0.08)),
+    linear-gradient(180deg, rgba(16, 19, 33, 0.06), rgba(16, 19, 33, 0.12)),
+    url("./assets/images/mai-hero.jpg");
+  background-size: cover;
+  background-position: 68% center;
+  opacity: 0.14;
+  filter: saturate(0.82) contrast(0.94);
   pointer-events: none;
 }
 
@@ -275,53 +277,22 @@ h1 span {
     var(--panel-strong);
 }
 
-.hero-portrait-frame {
-  position: relative;
-  margin: -6px -6px 22px;
-  border-radius: 24px;
-  overflow: hidden;
-  aspect-ratio: 16 / 10;
-  border: 1px solid rgba(111, 99, 200, 0.14);
-  box-shadow:
-    0 22px 46px rgba(76, 67, 125, 0.16),
-    inset 0 1px 0 rgba(255, 255, 255, 0.4);
-  background:
-    radial-gradient(circle at 20% 18%, rgba(255, 255, 255, 0.34), rgba(255, 255, 255, 0) 28%),
-    linear-gradient(135deg, rgba(111, 99, 200, 0.1), rgba(210, 108, 153, 0.08));
-}
-
-.hero-portrait-frame::after {
-  content: "";
-  position: absolute;
-  inset: 0;
-  background:
-    linear-gradient(180deg, rgba(13, 15, 27, 0), rgba(13, 15, 27, 0.08)),
-    linear-gradient(135deg, rgba(255, 255, 255, 0.08), rgba(255, 255, 255, 0));
-  pointer-events: none;
-}
-
-.hero-portrait {
-  width: 100%;
-  height: 100%;
-  object-fit: cover;
-  object-position: center 32%;
-  transform: scale(1.02);
-}
-
 .hero-card::before {
   content: "";
   position: absolute;
-  top: 18px;
-  right: -70px;
-  width: 210px;
-  height: 210px;
-  border-radius: 50%;
+  top: 12px;
+  right: -24px;
+  width: 180px;
+  height: 180px;
+  border-radius: 32px 0 0 32px;
   background:
-    radial-gradient(circle at 30% 30%, rgba(255, 255, 255, 0.56), rgba(255, 255, 255, 0) 38%),
-    radial-gradient(circle at 65% 35%, rgba(210, 108, 153, 0.22), rgba(210, 108, 153, 0) 46%),
-    radial-gradient(circle at 48% 68%, rgba(142, 166, 255, 0.22), rgba(142, 166, 255, 0) 52%);
-  opacity: 0.72;
-  filter: blur(2px);
+    linear-gradient(90deg, rgba(255, 255, 255, 0), rgba(255, 255, 255, 0.1)),
+    linear-gradient(180deg, rgba(16, 19, 33, 0.04), rgba(16, 19, 33, 0.1)),
+    url("./assets/images/mai-hero.jpg");
+  background-size: cover;
+  background-position: 78% center;
+  opacity: 0.14;
+  filter: saturate(0.78);
   pointer-events: none;
 }
 
@@ -404,10 +375,12 @@ h1 span {
   border-radius: 28px 0 0 28px;
   background:
     linear-gradient(90deg, rgba(255, 255, 255, 0), rgba(255, 255, 255, 0.08)),
-    radial-gradient(circle at 24% 22%, rgba(255, 255, 255, 0.3), rgba(255, 255, 255, 0) 30%),
-    radial-gradient(circle at 58% 30%, rgba(210, 108, 153, 0.18), rgba(210, 108, 153, 0) 36%),
-    radial-gradient(circle at 44% 72%, rgba(142, 166, 255, 0.18), rgba(142, 166, 255, 0) 40%);
-  opacity: 0.72;
+    linear-gradient(180deg, rgba(16, 19, 33, 0.04), rgba(16, 19, 33, 0.1)),
+    url("./assets/images/mai-hero.jpg");
+  background-size: cover;
+  background-position: 74% center;
+  opacity: 0.11;
+  filter: saturate(0.8);
 }
 
 #research::before {
@@ -417,11 +390,12 @@ h1 span {
   height: 280px;
   border-radius: 50%;
   background:
-    radial-gradient(circle at 32% 30%, rgba(255, 255, 255, 0.4), rgba(255, 255, 255, 0) 34%),
-    radial-gradient(circle at 64% 38%, rgba(210, 108, 153, 0.2), rgba(210, 108, 153, 0) 42%),
-    radial-gradient(circle at 48% 70%, rgba(142, 166, 255, 0.16), rgba(142, 166, 255, 0) 48%);
-  opacity: 0.58;
-  filter: blur(4px);
+    radial-gradient(circle, rgba(255, 255, 255, 0.08), rgba(255, 255, 255, 0)),
+    url("./assets/images/mai-hero.jpg");
+  background-size: cover;
+  background-position: 74% center;
+  opacity: 0.08;
+  filter: blur(2px) saturate(0.8);
 }
 
 #publications::before {
@@ -430,11 +404,12 @@ h1 span {
   height: 180px;
   border-radius: 24px;
   background:
-    linear-gradient(180deg, rgba(255, 255, 255, 0.08), rgba(255, 255, 255, 0)),
-    radial-gradient(circle at 18% 22%, rgba(255, 255, 255, 0.26), rgba(255, 255, 255, 0) 28%),
-    radial-gradient(circle at 68% 32%, rgba(210, 108, 153, 0.14), rgba(210, 108, 153, 0) 34%),
-    radial-gradient(circle at 38% 76%, rgba(142, 166, 255, 0.16), rgba(142, 166, 255, 0) 38%);
-  opacity: 0.7;
+    linear-gradient(180deg, rgba(255, 255, 255, 0.04), rgba(255, 255, 255, 0)),
+    url("./assets/images/mai-hero.jpg");
+  background-size: cover;
+  background-position: 68% center;
+  opacity: 0.08;
+  filter: saturate(0.8);
 }
 
 #contact::before {
@@ -445,10 +420,12 @@ h1 span {
   border-radius: 28px 0 0 28px;
   background:
     linear-gradient(90deg, rgba(255, 255, 255, 0), rgba(255, 255, 255, 0.08)),
-    radial-gradient(circle at 34% 26%, rgba(255, 255, 255, 0.3), rgba(255, 255, 255, 0) 28%),
-    radial-gradient(circle at 56% 34%, rgba(210, 108, 153, 0.18), rgba(210, 108, 153, 0) 34%),
-    radial-gradient(circle at 46% 76%, rgba(142, 166, 255, 0.18), rgba(142, 166, 255, 0) 40%);
-  opacity: 0.72;
+    linear-gradient(180deg, rgba(16, 19, 33, 0.04), rgba(16, 19, 33, 0.1)),
+    url("./assets/images/mai-hero.jpg");
+  background-size: cover;
+  background-position: 74% center;
+  opacity: 0.1;
+  filter: saturate(0.8);
 }
 
 .panel > * {
@@ -671,10 +648,6 @@ h1 span {
     opacity: 0.12;
   }
 
-  .hero-portrait-frame {
-    aspect-ratio: 4 / 3;
-  }
-
   .timeline article {
     grid-template-columns: 1fr;
     gap: 8px;
@@ -694,10 +667,6 @@ h1 span {
     width: 46%;
     right: -46px;
     opacity: 0.1;
-  }
-
-  .hero-portrait-frame {
-    margin-bottom: 18px;
   }
 
   .stat-grid {
