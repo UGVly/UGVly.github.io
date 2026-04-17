@@ -1,100 +1,1000 @@
 <!DOCTYPE html>
-<html lang="en">
+<html lang="zh-CN">
   <head>
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <title>Notes Blog</title>
-    <meta name="description" content="Markdown notes transformed into a simple blog." />
+    <meta name="description" content="Markdown notes blog with category sections and archive navigation." />
+    <link rel="preconnect" href="https://fonts.googleapis.com" />
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+    <link
+      href="https://fonts.googleapis.com/css2?family=Manrope:wght@400;500;700;800&family=Noto+Serif:wght@500;700&family=Noto+Serif+SC:wght@500;700&display=swap"
+      rel="stylesheet"
+    />
+    <link rel="stylesheet" href="/blog/assets/katex/katex.min.css" />
     <style>
       :root {
-        --bg: #f4efe6;
-        --panel: #fff9f0;
-        --text: #1f1a16;
-        --muted: #655a52;
-        --line: rgba(31, 26, 22, 0.12);
-        --accent: #c44f2a;
+        --bg: #f4f0fb;
+        --panel: rgba(255, 251, 255, 0.78);
+        --panel-strong: #fffbff;
+        --panel-soft: rgba(255, 255, 255, 0.34);
+        --text: #232238;
+        --muted: #615f78;
+        --line: rgba(65, 61, 103, 0.12);
+        --accent: #6f63c8;
+        --accent-2: #d26c99;
+        --accent-3: #8ea6ff;
+        --accent-soft: rgba(111, 99, 200, 0.12);
+        --shadow: 0 28px 72px rgba(76, 67, 125, 0.16);
+        --code-bg: #13192d;
+        --code-text: #f7f4ff;
       }
-      * { box-sizing: border-box; }
+      body.dark {
+        --bg: #141726;
+        --panel: rgba(21, 24, 40, 0.8);
+        --panel-strong: #171a2c;
+        --panel-soft: rgba(24, 27, 44, 0.46);
+        --text: #f7f4ff;
+        --muted: #c7c0df;
+        --line: rgba(247, 244, 255, 0.12);
+        --accent: #b5a1ff;
+        --accent-2: #ff9fc7;
+        --accent-3: #8fb4ff;
+        --accent-soft: rgba(181, 161, 255, 0.16);
+        --shadow: 0 26px 70px rgba(0, 0, 0, 0.38);
+      }
+      * {
+        box-sizing: border-box;
+      }
       body {
         margin: 0;
+        min-height: 100vh;
         color: var(--text);
-        background: linear-gradient(180deg, #efe4d1 0%, var(--bg) 100%);
-        font-family: "Segoe UI", sans-serif;
+        background:
+          radial-gradient(circle at top left, rgba(210, 108, 153, 0.18), transparent 28%),
+          radial-gradient(circle at 82% 12%, rgba(142, 166, 255, 0.22), transparent 26%),
+          radial-gradient(circle at 50% 100%, rgba(111, 99, 200, 0.12), transparent 35%),
+          linear-gradient(180deg, #f9f5ff 0%, var(--bg) 48%, #e9e4f6 100%);
+        font-family: "Manrope", sans-serif;
+        transition: background 240ms ease, color 240ms ease;
+      }
+      body.dark {
+        background:
+          radial-gradient(circle at top left, rgba(255, 159, 199, 0.14), transparent 24%),
+          radial-gradient(circle at 88% 15%, rgba(143, 180, 255, 0.18), transparent 24%),
+          radial-gradient(circle at 45% 100%, rgba(181, 161, 255, 0.12), transparent 30%),
+          linear-gradient(180deg, #101321 0%, var(--bg) 50%, #171a2b 100%);
+      }
+      a {
+        color: inherit;
+        text-decoration: none;
+      }
+      a:hover {
+        text-decoration: none;
+      }
+      img {
+        display: block;
+        max-width: 100%;
       }
       .shell {
-        width: min(900px, calc(100% - 32px));
+        width: min(1120px, calc(100% - 32px));
         margin: 0 auto;
-        padding: 32px 0 80px;
+        padding: 24px 0 80px;
       }
-      .panel {
-        border: 1px solid var(--line);
-        border-radius: 24px;
-        padding: 28px;
-        background: rgba(255, 249, 240, 0.92);
+      main {
+        display: grid;
+        gap: 24px;
       }
-      a { color: var(--accent); text-decoration: none; }
-      .nav {
+      .site-header {
         display: flex;
-        gap: 16px;
-        margin-bottom: 20px;
+        align-items: center;
+        justify-content: space-between;
+        gap: 20px;
+        padding: 8px 0 28px;
+      }
+      .brand {
+        display: inline-flex;
+        align-items: center;
+        justify-content: center;
+        width: 52px;
+        height: 52px;
+        border: 1px solid var(--line);
+        border-radius: 50%;
+        background: linear-gradient(135deg, rgba(255, 255, 255, 0.78), rgba(221, 213, 255, 0.58));
+        backdrop-filter: blur(12px);
+        font-weight: 800;
+        letter-spacing: 0.08em;
+      }
+      .site-nav {
+        display: flex;
+        flex-wrap: wrap;
+        gap: 12px;
         color: var(--muted);
+      }
+      .site-nav a {
+        padding: 0.7rem 1rem;
+        border: 1px solid transparent;
+        border-radius: 999px;
+        transition: border-color 180ms ease, background 180ms ease, color 180ms ease;
+      }
+      .site-nav a:hover {
+        border-color: var(--line);
+        background: rgba(255, 255, 255, 0.28);
+        color: var(--text);
+      }
+      .theme-toggle {
+        position: fixed;
+        right: 18px;
+        bottom: 18px;
+        z-index: 30;
+        border: 1px solid var(--line);
+        border-radius: 999px;
+        padding: 14px 18px;
+        background: var(--panel-strong);
+        color: var(--text);
+        font: inherit;
+        font-weight: 700;
+        cursor: pointer;
+        box-shadow: var(--shadow);
+      }
+      .blog-hero {
+        display: block;
+      }
+      .hero-panel,
+      .content-panel {
+        border: 1px solid var(--line);
+        border-radius: 28px;
+        background: var(--panel);
+        backdrop-filter: blur(20px);
+        box-shadow: var(--shadow);
+      }
+      .hero-panel {
+        position: relative;
+        overflow: hidden;
+        padding: 34px;
+        background:
+          radial-gradient(circle at top right, rgba(255, 255, 255, 0.82), transparent 30%),
+          linear-gradient(180deg, rgba(255, 255, 255, 0.26), transparent 45%),
+          var(--panel);
+      }
+      .hero-panel::before {
+        content: "";
+        position: absolute;
+        top: 24px;
+        right: -40px;
+        width: 42%;
+        height: calc(100% - 48px);
+        border-radius: 28px 0 0 28px;
+        background: linear-gradient(90deg, rgba(255, 255, 255, 0), rgba(255, 255, 255, 0.08)),
+          radial-gradient(circle at 30% 50%, rgba(142, 166, 255, 0.16), rgba(142, 166, 255, 0)),
+          radial-gradient(circle at 72% 40%, rgba(210, 108, 153, 0.14), rgba(210, 108, 153, 0));
+        background-size: cover;
+        background-position: 62% center;
+        opacity: 0.16;
+        filter: saturate(0.92);
+        pointer-events: none;
+      }
+      .hero-panel::after {
+        content: "";
+        position: absolute;
+        right: -86px;
+        bottom: -104px;
+        width: 250px;
+        height: 250px;
+        border-radius: 50%;
+        background: radial-gradient(circle, rgba(178, 160, 255, 0.22), rgba(178, 160, 255, 0));
+        pointer-events: none;
       }
       .eyebrow {
         margin: 0 0 12px;
         color: var(--accent);
         text-transform: uppercase;
-        letter-spacing: 0.14em;
+        letter-spacing: 0.18em;
         font-size: 0.78rem;
         font-weight: 700;
       }
-      h1, h2, h3 { line-height: 1.2; }
-      p, li { color: var(--muted); line-height: 1.8; }
-      pre {
-        overflow: auto;
-        padding: 16px;
-        border-radius: 16px;
-        background: #201d1a;
-        color: #f6f1e8;
+      .hero-kicker {
+        margin: 0 0 18px;
+        color: var(--accent-2);
+        font-size: 0.84rem;
+        font-weight: 800;
+        letter-spacing: 0.08em;
+        text-transform: uppercase;
       }
-      code {
+      h1, h2, h3, h4, .brand {
+        margin: 0;
+        color: var(--text);
+        line-height: 1.2;
+        font-family: "Noto Serif", serif;
+      }
+      html:lang(zh-CN) h1,
+      html:lang(zh-CN) h2,
+      html:lang(zh-CN) h3,
+      html:lang(zh-CN) h4,
+      html:lang(zh-CN) .brand {
+        font-family: "Noto Serif SC", serif;
+      }
+      h1 {
+        font-size: clamp(2.3rem, 6vw, 4.7rem);
+        line-height: 1.02;
+      }
+      h2 {
+        font-size: clamp(1.5rem, 3vw, 2.3rem);
+      }
+      .hero-description {
+        max-width: 56ch;
+        margin: 20px 0 0;
+        color: var(--muted);
+        font-size: 1.04rem;
+        line-height: 1.82;
+      }
+      .content-panel {
+        position: relative;
+        overflow: hidden;
+        padding: 34px;
+      }
+      .content-panel::before {
+        content: "";
+        position: absolute;
+        top: 30px;
+        right: -120px;
+        width: 320px;
+        height: 320px;
+        border-radius: 50%;
+        background: radial-gradient(circle, rgba(255, 255, 255, 0.06), rgba(255, 255, 255, 0)),
+          radial-gradient(circle at 62% 42%, rgba(178, 160, 255, 0.16), rgba(178, 160, 255, 0));
+        background-size: cover;
+        background-position: 48% center;
+        opacity: 0.09;
+        filter: blur(2px) saturate(0.85);
+        pointer-events: none;
+      }
+      .content-panel > * {
+        position: relative;
+        z-index: 1;
+      }
+      .content-panel > :first-child {
+        margin-top: 0;
+      }
+      .note-intro {
+        max-width: 70ch;
+      }
+      .note-article {
+        max-width: 78ch;
+      }
+      .note-content > :first-child {
+        margin-top: 0;
+      }
+      .note-content h2,
+      .note-content h3,
+      .note-content h4 {
+        margin-top: 2.4rem;
+        margin-bottom: 0.9rem;
+      }
+      .note-content p,
+      .note-content li,
+      .note-content blockquote {
+        color: var(--muted);
+        font-size: 1.05rem;
+        line-height: 1.9;
+      }
+      .note-content a {
+        color: var(--accent);
+      }
+      .note-content ul,
+      .note-content ol {
+        margin: 1rem 0;
+        padding-left: 1.5rem;
+      }
+      .note-content li + li {
+        margin-top: 0.5rem;
+      }
+      .note-content hr {
+        border: 0;
+        border-top: 1px solid var(--line);
+        margin: 2.2rem 0;
+      }
+      .note-content blockquote {
+        margin: 1.5rem 0;
+        padding: 0.35rem 1rem;
+        border-left: 4px solid rgba(210, 108, 153, 0.35);
+        border-radius: 0 18px 18px 0;
+        background: rgba(255, 255, 255, 0.42);
+      }
+      .note-content img {
+        margin: 1.7rem 0;
+        border-radius: 22px;
+        border: 1px solid var(--line);
+        box-shadow: var(--shadow);
+      }
+      .note-content pre {
+        margin: 1.5rem 0;
+        padding: 16px;
+        border-radius: 18px;
+        background: var(--code-bg);
+        color: var(--code-text);
+      }
+      .note-content .code-block {
+        margin: 1.5rem 0;
+        border-radius: 18px;
+        overflow: hidden;
+        background: var(--code-bg);
+        color: var(--code-text);
+        box-shadow: inset 0 0 0 1px rgba(255, 255, 255, 0.06);
+      }
+      .note-content .code-block-toolbar {
+        display: flex;
+        align-items: center;
+        justify-content: space-between;
+        gap: 12px;
+        padding: 12px 14px;
+        border-bottom: 1px solid rgba(255, 255, 255, 0.08);
+        background: rgba(255, 255, 255, 0.04);
+      }
+      .note-content .code-block-language {
+        min-width: 0;
+        font-size: 0.8rem;
+        text-transform: uppercase;
+        letter-spacing: 0.08em;
+        color: rgba(246, 241, 232, 0.68);
+      }
+      .note-content .code-copy-button {
+        border: 1px solid rgba(255, 255, 255, 0.12);
+        border-radius: 999px;
+        padding: 0.5rem 0.85rem;
+        background: rgba(255, 255, 255, 0.08);
+        color: var(--code-text);
+        font: inherit;
+        font-size: 0.88rem;
+        font-weight: 700;
+        cursor: pointer;
+        transition: background 160ms ease, border-color 160ms ease, transform 160ms ease, color 160ms ease;
+      }
+      .note-content .code-copy-button:hover {
+        background: rgba(255, 255, 255, 0.14);
+        border-color: rgba(255, 255, 255, 0.22);
+      }
+      .note-content .code-copy-button:active {
+        transform: translateY(1px);
+      }
+      .note-content .code-copy-button[data-state="copied"] {
+        border-color: rgba(111, 99, 200, 0.48);
+        background: rgba(111, 99, 200, 0.24);
+        color: #f3eeff;
+      }
+      .note-content .code-copy-button[data-state="failed"] {
+        border-color: rgba(210, 108, 153, 0.48);
+        background: rgba(210, 108, 153, 0.18);
+      }
+      .note-content .code-block pre {
+        overflow: auto;
+        margin: 0;
+        padding: 18px 20px 20px;
+        border-radius: 0;
+        background: transparent;
+      }
+      .note-content code,
+      .dashboard-card code {
         padding: 0.15em 0.35em;
         border-radius: 6px;
-        background: rgba(31, 26, 22, 0.08);
+        background: rgba(35, 34, 56, 0.08);
       }
-      pre code { background: transparent; padding: 0; }
-      .post-list {
+      .note-content pre code {
+        padding: 0;
+        background: transparent;
+        color: inherit;
+      }
+      .note-content table {
+        width: 100%;
+        border-collapse: collapse;
+        margin: 1.5rem 0;
+      }
+      .note-content th,
+      .note-content td {
+        border: 1px solid var(--line);
+        padding: 0.75rem;
+        text-align: left;
+      }
+      .note-content th {
+        background: rgba(255, 255, 255, 0.3);
+      }
+      .math-inline .katex {
+        font-size: 1.04em;
+      }
+      .math-display {
+        margin: 1.4rem 0;
+        overflow-x: auto;
+        overflow-y: hidden;
+      }
+      .math-display .katex-display {
+        margin: 0;
+        padding: 0.8rem 1rem;
+        border: 1px solid var(--line);
+        border-radius: 20px;
+        background: rgba(255, 255, 255, 0.32);
+      }
+      .post-header-meta,
+      .post-card-meta,
+      .archive-item-meta {
+        display: flex;
+        flex-wrap: wrap;
+        gap: 8px;
+        align-items: center;
+      }
+      .post-header-meta {
+        margin-bottom: 10px;
+      }
+      .meta-badge {
+        display: inline-flex;
+        align-items: center;
+        border: 1px solid rgba(111, 99, 200, 0.2);
+        border-radius: 999px;
+        padding: 0.34rem 0.7rem;
+        background: var(--accent-soft);
+        color: var(--accent);
+        font-size: 0.84rem;
+        font-weight: 700;
+      }
+      .meta-inline {
+        color: var(--muted);
+        font-size: 0.92rem;
+      }
+      .source-note {
+        margin: 0 0 24px;
+        color: var(--muted);
+        font-size: 0.95rem;
+      }
+      .dashboard-grid {
         display: grid;
+        grid-template-columns: repeat(auto-fit, minmax(190px, 1fr));
         gap: 14px;
+        margin: 28px 0 10px;
+      }
+      .dashboard-card,
+      .post-card,
+      .collection-block,
+      .archive-item {
+        border: 1px solid var(--line);
+        border-radius: 24px;
+        background: var(--panel-soft);
+        box-shadow: inset 0 1px 0 rgba(255, 255, 255, 0.14);
+      }
+      .dashboard-card {
+        padding: 18px;
+      }
+      .dashboard-label,
+      .section-label {
+        display: block;
+        margin-bottom: 10px;
+        color: var(--accent);
+        text-transform: uppercase;
+        letter-spacing: 0.12em;
+        font-size: 0.75rem;
+        font-weight: 700;
+      }
+      .dashboard-card strong {
+        display: block;
+        font-family: "Noto Serif", serif;
+        font-size: 1.8rem;
+      }
+      html:lang(zh-CN) .dashboard-card strong {
+        font-family: "Noto Serif SC", serif;
+      }
+      .dashboard-card p,
+      .post-card p,
+      .collection-intro,
+      .archive-item p {
+        margin: 10px 0 0;
+        color: var(--muted);
+        line-height: 1.7;
+      }
+      .section-stack {
+        display: grid;
+        gap: 28px;
         margin-top: 24px;
       }
-      .post-card {
-        border: 1px solid var(--line);
-        border-radius: 18px;
+      .section-shell {
+        padding-top: 8px;
+      }
+      .section-header {
+        display: flex;
+        flex-direction: column;
+        gap: 10px;
+        margin-bottom: 18px;
+      }
+      .jump-list {
+        display: flex;
+        flex-wrap: wrap;
+        gap: 10px;
+        margin: 0 0 18px;
+      }
+      .jump-chip {
+        display: inline-flex;
+        align-items: center;
+        gap: 10px;
+        padding: 0.65rem 0.9rem;
+        border: 1px solid rgba(111, 99, 200, 0.18);
+        border-radius: 999px;
+        background: rgba(255, 255, 255, 0.42);
+        color: var(--text);
+        transition: border-color 180ms ease, transform 180ms ease, background 180ms ease;
+      }
+      .jump-chip:hover {
+        border-color: rgba(111, 99, 200, 0.32);
+        background: rgba(255, 255, 255, 0.62);
+        transform: translateY(-1px);
+      }
+      .jump-chip strong {
+        color: var(--accent);
+        font-size: 0.92rem;
+      }
+      .jump-chip-muted {
+        border-color: var(--line);
+      }
+      .collection-block {
         padding: 18px;
-        background: rgba(255, 255, 255, 0.4);
       }
-      .post-card h2 {
-        margin: 0 0 8px;
-        font-size: 1.2rem;
+      .collection-header {
+        display: flex;
+        align-items: flex-start;
+        justify-content: space-between;
+        gap: 16px;
+        margin-bottom: 16px;
       }
-      .post-card p {
-        margin: 0;
+      .collection-count {
+        flex-shrink: 0;
+        padding: 0.36rem 0.75rem;
+        border-radius: 999px;
+        background: rgba(111, 99, 200, 0.1);
+        color: var(--accent);
+        font-size: 0.88rem;
+        font-weight: 700;
+      }
+      .post-grid {
+        display: grid;
+        grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+        gap: 14px;
+      }
+      .post-card {
+        padding: 18px;
+        transition: transform 180ms ease, border-color 180ms ease, background 180ms ease;
+      }
+      .post-card:hover {
+        transform: translateY(-2px);
+        border-color: rgba(111, 99, 200, 0.24);
+        background: rgba(255, 255, 255, 0.5);
+      }
+      .post-card h3,
+      .archive-item h3 {
+        margin-top: 14px;
+        font-size: 1.12rem;
+      }
+      .post-card h3 a,
+      .archive-item h3 a {
+        color: var(--text);
+      }
+      .post-card h3 a:hover,
+      .archive-item h3 a:hover {
+        color: var(--accent);
+      }
+      .post-card-footer {
+        display: flex;
+        flex-wrap: wrap;
+        justify-content: space-between;
+        gap: 12px;
+        margin-top: 16px;
+        color: var(--muted);
+        font-size: 0.86rem;
+      }
+      .archive-list {
+        display: grid;
+        gap: 12px;
+      }
+      .archive-item {
+        display: grid;
+        grid-template-columns: 1fr auto;
+        gap: 16px;
+        padding: 18px;
+      }
+      .archive-item-side {
+        display: flex;
+        flex-direction: column;
+        gap: 6px;
+        align-items: flex-end;
+        color: var(--muted);
+        font-size: 0.86rem;
+        white-space: nowrap;
+      }
+      @media (max-width: 980px) {
+      }
+      @media (max-width: 900px) {
+        .archive-item {
+          grid-template-columns: 1fr;
+        }
+        .archive-item-side {
+          align-items: flex-start;
+          white-space: normal;
+        }
+      }
+      @media (max-width: 720px) {
+        .shell {
+          width: min(100% - 16px, 1120px);
+          padding-top: 16px;
+        }
+        .site-header {
+          flex-direction: column;
+          align-items: flex-start;
+        }
+        .hero-panel,
+        .content-panel {
+          padding: 20px;
+          border-radius: 24px;
+        }
+        .hero-panel::before {
+          width: 44%;
+          right: -48px;
+          height: calc(100% - 40px);
+          top: 20px;
+          opacity: 0.11;
+        }
+        .collection-block,
+        .post-card,
+        .dashboard-card {
+          padding: 16px;
+        }
+        .note-content p,
+        .note-content li,
+        .note-content blockquote {
+          font-size: 1rem;
+        }
+        .note-content .code-block-toolbar {
+          padding: 10px 12px;
+        }
+        .note-content .code-copy-button {
+          padding: 0.45rem 0.72rem;
+        }
+        .note-content .code-block pre {
+          padding: 16px;
+        }
+        .collection-header {
+          flex-direction: column;
+        }
+        .jump-chip {
+          width: 100%;
+          justify-content: space-between;
+        }
+        .theme-toggle {
+          left: 12px;
+          right: 12px;
+          bottom: 12px;
+        }
       }
     </style>
   </head>
   <body>
     <div class="shell">
-      <nav class="nav">
-        <a href="/">Home</a>
-        <a href="/blog/index.html">Blog</a>
-      </nav>
-      <section class="panel">
-        <p class="eyebrow">Notes / 笔记</p><h1>Notes Blog</h1><p>Place your markdown notes in <code>C:\Users\zhoujiang\Desktop\personal-homepage\notes</code>, then run <code>npm.cmd run build:blog</code> to regenerate this section of the site.</p>
-        <div class="post-list"><article class="post-card">
-            <h2><a href="/blog/posts/welcome.html">Welcome to My Notes Blog</a></h2>
-            <p>welcome.md</p>
-          </article></div>
+      <header class="site-header">
+        <a class="brand" href="/">ZJ</a>
+        <nav class="site-nav">
+          <a href="/">Home</a>
+          <a href="/#research">Research</a>
+          <a href="/blog/index.html">Notes</a>
+        </nav>
+      </header>
+      <main>
+        <section class="blog-hero">
+          <div class="hero-panel">
+            <p class="eyebrow">Notes / 笔记</p>
+            
+            <h1>Notes Blog</h1>
+            
+          </div>
+        </section>
+        <section class="content-panel">
+        
+        <div class="section-stack">
+      <section class="dashboard-grid">
+    <article class="dashboard-card">
+      <span class="dashboard-label">文章总数</span>
+      <strong>5</strong>
+    </article>
+    <article class="dashboard-card">
+      <span class="dashboard-label">分类数量</span>
+      <strong>1</strong>
+    </article>
+    <article class="dashboard-card">
+      <span class="dashboard-label">归档月份</span>
+      <strong>1</strong>
+    </article>
+    <article class="dashboard-card">
+      <span class="dashboard-label">最近更新</span>
+      <strong>2026年4月18日</strong>
+    </article>
+  </section>
+      <section class="section-shell">
+        <div class="section-header">
+          <div>
+            <p class="section-label">Categories</p>
+            <h2>按分类查看</h2>
+          </div>
+        </div>
+        <div class="jump-list"><a class="jump-chip" href="#category-研究笔记">
+          <span>研究笔记</span>
+          <strong>5</strong>
+        </a></div>
+        <section class="collection-block" id="category-研究笔记">
+          <div class="collection-header">
+            <div>
+              <p class="section-label">Category</p>
+              <h2>研究笔记</h2>
+            </div>
+            <span class="collection-count">5 篇</span>
+          </div>
+          <div class="post-grid">
+            <article class="post-card">
+    <div class="post-card-meta">
+      <a class="meta-badge" href="/blog/index.html#category-研究笔记"><span>研究笔记</span></a>
+      <span class="meta-inline">2026年4月18日</span>
+    </div>
+    <h3><a href="/blog/posts/why-diffusion-models-dont-memorize-详细阅读笔记与公式推导.html">Why Diffusion Models Don't Memorize：详细阅读笔记与公式推导</a></h3>
+    <p>论文信息：</p>
+    <div class="post-card-footer">
+      <span>2026 年 4 月</span>
+      <span>Why Diffusion Models Dont Memorize-详细阅读笔记与公式推导.md</span>
+    </div>
+  </article>
+<article class="post-card">
+    <div class="post-card-meta">
+      <a class="meta-badge" href="/blog/index.html#category-研究笔记"><span>研究笔记</span></a>
+      <span class="meta-inline">2026年4月18日</span>
+    </div>
+    <h3><a href="/blog/posts/continual-learning-by-modeling-intra-class-variation-详细阅读笔记.html">Continual Learning by Modeling Intra-Class Variation：详细阅读笔记</a></h3>
+    <p>0. 论文信息</p>
+    <div class="post-card-footer">
+      <span>2026 年 4 月</span>
+      <span>Continual Learning by Modeling Intra-Class Variation-详细阅读笔记.md</span>
+    </div>
+  </article>
+<article class="post-card">
+    <div class="post-card-meta">
+      <a class="meta-badge" href="/blog/index.html#category-研究笔记"><span>研究笔记</span></a>
+      <span class="meta-inline">2026年4月18日</span>
+    </div>
+    <h3><a href="/blog/posts/robust-learning-with-jacobian-regularization-论文阅读与公式推导.html">Robust Learning with Jacobian Regularization：论文阅读与公式推导</a></h3>
+    <p>这篇笔记对应论文：</p>
+    <div class="post-card-footer">
+      <span>2026 年 4 月</span>
+      <span>Robust Learning with Jacobian Regularization-论文阅读与公式推导.md</span>
+    </div>
+  </article>
+<article class="post-card">
+    <div class="post-card-meta">
+      <a class="meta-badge" href="/blog/index.html#category-研究笔记"><span>研究笔记</span></a>
+      <span class="meta-inline">2026年4月18日</span>
+    </div>
+    <h3><a href="/blog/posts/semi-parametric-image-synthesis-详细阅读笔记与公式推导.html">Semi-parametric Image Synthesis：详细阅读笔记与公式推导</a></h3>
+    <p>论文：</p>
+    <div class="post-card-footer">
+      <span>2026 年 4 月</span>
+      <span>Semi-parametric Image Synthesis-详细阅读笔记与公式推导.md</span>
+    </div>
+  </article>
+<article class="post-card">
+    <div class="post-card-meta">
+      <a class="meta-badge" href="/blog/index.html#category-研究笔记"><span>研究笔记</span></a>
+      <span class="meta-inline">2026年4月18日</span>
+    </div>
+    <h3><a href="/blog/posts/agnostic-active-learning-is-always-better-than-passive-learning-详细阅读笔记与公式推导.html">Agnostic Active Learning Is Always Better Than Passive Learning：详细阅读笔记与公式推导</a></h3>
+    <p>0. 论文信息</p>
+    <div class="post-card-footer">
+      <span>2026 年 4 月</span>
+      <span>Agnostic Active Learning Is Always Better Than Passive Learning-详细阅读笔记与公式推导.md</span>
+    </div>
+  </article>
+          </div>
+        </section>
+      </section>
+      <section class="section-shell">
+        <div class="section-header">
+          <div>
+            <p class="section-label">Archive</p>
+            <h2>按时间归档</h2>
+          </div>
+        </div>
+        <div class="jump-list"><a class="jump-chip jump-chip-muted" href="#archive-2026-04">
+          <span>2026 年 4 月</span>
+          <strong>5</strong>
+        </a></div>
+        <section class="collection-block archive-block" id="archive-2026-04">
+          <div class="collection-header">
+            <div>
+              <p class="section-label">Archive</p>
+              <h2>2026 年 4 月</h2>
+            </div>
+            <span class="collection-count">5 篇</span>
+          </div>
+          <div class="archive-list">
+            <article class="archive-item">
+                    <div>
+                      <div class="archive-item-meta">
+                        <a class="meta-badge" href="/blog/index.html#category-研究笔记"><span>研究笔记</span></a>
+                      </div>
+                      <h3><a href="/blog/posts/why-diffusion-models-dont-memorize-详细阅读笔记与公式推导.html">Why Diffusion Models Don't Memorize：详细阅读笔记与公式推导</a></h3>
+                      <p>论文信息：</p>
+                    </div>
+                    <div class="archive-item-side">
+                      <time datetime="2026-04-18">2026年4月18日</time>
+                      <span>Why Diffusion Models Dont Memorize-详细阅读笔记与公式推导.md</span>
+                    </div>
+                  </article>
+<article class="archive-item">
+                    <div>
+                      <div class="archive-item-meta">
+                        <a class="meta-badge" href="/blog/index.html#category-研究笔记"><span>研究笔记</span></a>
+                      </div>
+                      <h3><a href="/blog/posts/continual-learning-by-modeling-intra-class-variation-详细阅读笔记.html">Continual Learning by Modeling Intra-Class Variation：详细阅读笔记</a></h3>
+                      <p>0. 论文信息</p>
+                    </div>
+                    <div class="archive-item-side">
+                      <time datetime="2026-04-18">2026年4月18日</time>
+                      <span>Continual Learning by Modeling Intra-Class Variation-详细阅读笔记.md</span>
+                    </div>
+                  </article>
+<article class="archive-item">
+                    <div>
+                      <div class="archive-item-meta">
+                        <a class="meta-badge" href="/blog/index.html#category-研究笔记"><span>研究笔记</span></a>
+                      </div>
+                      <h3><a href="/blog/posts/robust-learning-with-jacobian-regularization-论文阅读与公式推导.html">Robust Learning with Jacobian Regularization：论文阅读与公式推导</a></h3>
+                      <p>这篇笔记对应论文：</p>
+                    </div>
+                    <div class="archive-item-side">
+                      <time datetime="2026-04-18">2026年4月18日</time>
+                      <span>Robust Learning with Jacobian Regularization-论文阅读与公式推导.md</span>
+                    </div>
+                  </article>
+<article class="archive-item">
+                    <div>
+                      <div class="archive-item-meta">
+                        <a class="meta-badge" href="/blog/index.html#category-研究笔记"><span>研究笔记</span></a>
+                      </div>
+                      <h3><a href="/blog/posts/semi-parametric-image-synthesis-详细阅读笔记与公式推导.html">Semi-parametric Image Synthesis：详细阅读笔记与公式推导</a></h3>
+                      <p>论文：</p>
+                    </div>
+                    <div class="archive-item-side">
+                      <time datetime="2026-04-18">2026年4月18日</time>
+                      <span>Semi-parametric Image Synthesis-详细阅读笔记与公式推导.md</span>
+                    </div>
+                  </article>
+<article class="archive-item">
+                    <div>
+                      <div class="archive-item-meta">
+                        <a class="meta-badge" href="/blog/index.html#category-研究笔记"><span>研究笔记</span></a>
+                      </div>
+                      <h3><a href="/blog/posts/agnostic-active-learning-is-always-better-than-passive-learning-详细阅读笔记与公式推导.html">Agnostic Active Learning Is Always Better Than Passive Learning：详细阅读笔记与公式推导</a></h3>
+                      <p>0. 论文信息</p>
+                    </div>
+                    <div class="archive-item-side">
+                      <time datetime="2026-04-18">2026年4月18日</time>
+                      <span>Agnostic Active Learning Is Always Better Than Passive Learning-详细阅读笔记与公式推导.md</span>
+                    </div>
+                  </article>
+          </div>
+        </section>
       </section>
     </div>
+        </section>
+      </main>
+    </div>
+    <button class="theme-toggle" type="button" aria-label="Toggle theme">
+      切换配色
+    </button>
+    <script>
+      (function () {
+        const themeStorageKey = "personal-homepage-theme";
+        const themeToggle = document.querySelector(".theme-toggle");
+
+        function applyTheme(theme) {
+          document.body.classList.toggle("dark", theme === "dark");
+        }
+
+        const savedTheme = localStorage.getItem(themeStorageKey);
+        if (savedTheme) {
+          applyTheme(savedTheme);
+        }
+
+        function fallbackCopyText(text) {
+          return new Promise(function (resolve, reject) {
+            const textarea = document.createElement("textarea");
+            textarea.value = text;
+            textarea.setAttribute("readonly", "");
+            textarea.style.position = "fixed";
+            textarea.style.top = "-9999px";
+            textarea.style.opacity = "0";
+            document.body.appendChild(textarea);
+            textarea.select();
+            textarea.setSelectionRange(0, textarea.value.length);
+
+            try {
+              const succeeded = document.execCommand("copy");
+              document.body.removeChild(textarea);
+
+              if (succeeded) {
+                resolve();
+                return;
+              }
+
+              reject(new Error("execCommand copy failed"));
+            } catch (error) {
+              document.body.removeChild(textarea);
+              reject(error);
+            }
+          });
+        }
+
+        function copyText(text) {
+          if (navigator.clipboard && typeof navigator.clipboard.writeText === "function") {
+            return navigator.clipboard.writeText(text).catch(function () {
+              return fallbackCopyText(text);
+            });
+          }
+
+          return fallbackCopyText(text);
+        }
+
+        function setButtonState(button, state) {
+          const label = button.querySelector(".code-copy-button-label");
+          const textMap = {
+            idle: "复制",
+            copied: "已复制",
+            failed: "重试"
+          };
+
+          button.dataset.state = state;
+          label.textContent = textMap[state];
+        }
+
+        document.addEventListener("click", function (event) {
+          const button = event.target.closest(".code-copy-button");
+
+          if (!button) {
+            return;
+          }
+
+          const block = button.closest(".code-block");
+          const code = block && block.querySelector("pre code");
+
+          if (!code) {
+            return;
+          }
+
+          const text = code.textContent || "";
+          window.clearTimeout(button._resetTimer);
+          button.disabled = true;
+
+          copyText(text)
+            .then(function () {
+              setButtonState(button, "copied");
+            })
+            .catch(function () {
+              setButtonState(button, "failed");
+            })
+            .finally(function () {
+              button._resetTimer = window.setTimeout(function () {
+                setButtonState(button, "idle");
+              button.disabled = false;
+              }, 1800);
+            });
+        });
+
+        if (themeToggle) {
+          themeToggle.addEventListener("click", function () {
+            const nextTheme = document.body.classList.contains("dark") ? "light" : "dark";
+            applyTheme(nextTheme);
+            localStorage.setItem(themeStorageKey, nextTheme);
+          });
+        }
+      })();
+    </script>
   </body>
 </html>

@@ -5,7 +5,16 @@
   "description": "A standalone personal homepage project.",
   "scripts": {
     "build:blog": "node build-blog.js",
+    "build:blog:public": "BLOG_VISIBILITY=public BLOG_DISABLE_PRIVATE_DECOR=1 node build-blog.js",
     "dev": "node server.js",
-    "start": "node server.js"
+    "notes:visibility": "node scripts/ensure-note-visibility.js --write",
+    "notes:visibility:check": "node scripts/ensure-note-visibility.js",
+    "publish:public": "node scripts/publish-public-notes.js",
+    "start": "node server.js",
+    "open:obsidian-blog": "open 'obsidian://open?vault=personal-homepage&file=BLOG'"
+  },
+  "dependencies": {
+    "katex": "^0.16.45",
+    "marked": "^18.0.0"
   }
 }
