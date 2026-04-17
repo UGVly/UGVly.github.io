@@ -595,15 +595,84 @@ function extractDisplayMath(markdownBody) {
   };
 }
 
-function renderMarkdown(markdownBody) {
+function normalizeUrlPath(value = "") {
+  return String(value).replace(/\\/g, "/");
+}
+
+function splitUrlSuffix(src = "") {
+  const match = String(src).match(/^([^?#]*)(.*)$/);
+  return {
+    pathname: match ? match[1] : String(src),
+    suffix: match ? match[2] : ""
+  };
+}
+
+function isExternalAssetPath(src = "") {
+  return /^(?:[a-z][a-z0-9+.-]*:|\/\/|#|\/)/i.test(String(src).trim());
+}
+
+function resolveLocalAssetPath(sourceFilePath, assetPath) {
+  const directPath = path.resolve(path.dirname(sourceFilePath), assetPath);
+
+  if (fs.existsSync(directPath) && fs.statSync(directPath).isFile()) {
+    return directPath;
+  }
+
+  const projectRelativePath = assetPath.replace(/^(\.\.\/|\.\/)+/, "");
+  const projectPath = path.resolve(projectRoot, projectRelativePath);
+
+  if (fs.existsSync(projectPath) && fs.statSync(projectPath).isFile()) {
+    return projectPath;
+  }
+
+  return "";
+}
+
+function copyNoteAssetToOutput(assetPath) {
+  const relativeFromProject = normalizeUrlPath(path.relative(projectRoot, assetPath));
+  const outputRelative = relativeFromProject.startsWith("assets/")
+    ? relativeFromProject.slice("assets/".length)
+    : relativeFromProject.startsWith("../")
+      ? path.basename(assetPath)
+      : relativeFromProject;
+  const targetRelative = path.posix.join("assets", "note-media", outputRelative);
+  const targetPath = path.join(outputDir, targetRelative);
+
+  fs.mkdirSync(path.dirname(targetPath), { recursive: true });
+  fs.copyFileSync(assetPath, targetPath);
+
+  return encodeURI(withBasePath(`/blog/${targetRelative}`));
+}
+
+function rewriteLocalImageSources(html, sourceFilePath) {
+  return html.replace(/<img\b([^>]*?)src=(["'])([^"']+)\2([^>]*?)>/gi, (match, before, quote, src, after) => {
+    if (isExternalAssetPath(src)) {
+      return match;
+    }
+
+    const { pathname, suffix } = splitUrlSuffix(src);
+    const absolutePath = resolveLocalAssetPath(sourceFilePath, pathname);
+
+    if (!absolutePath) {
+      return match;
+    }
+
+    const publicUrl = `${copyNoteAssetToOutput(absolutePath)}${suffix}`;
+    return `<img${before}src=${quote}${publicUrl}${quote}${after}>`;
+  });
+}
+
+function renderMarkdown(markdownBody, sourceFilePath = "") {
   const stripped = stripLeadingTitle(markdownBody);
   const { body, blocks } = extractDisplayMath(stripped);
-  const html = markdown.parse(body);
+  let html = markdown.parse(body);
 
-  return html.replace(
+  html = html.replace(
     /<div data-display-math-placeholder="(\d+)"><\/div>/g,
     (_, index) => `<div class="math-display">${renderMath(blocks[Number(index)] || "", true)}</div>`
   );
+
+  return sourceFilePath ? rewriteLocalImageSources(html, sourceFilePath) : html;
 }
 
 function ensureKatexAssets() {
@@ -1702,7 +1771,7 @@ for (const filePath of markdownFiles) {
     continue;
   }
 
-  const content = renderMarkdown(body);
+  const content = renderMarkdown(body, filePath);
 
   const post = {
     title,
