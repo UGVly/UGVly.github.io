@@ -38,6 +38,7 @@ const translations = {
     "stats.two.label": "Alignment focus",
     "stats.three.value": "arXiv",
     "stats.three.label": "Recent preprint",
+    "visual.heroAlt": "Sakurajima Mai inspired illustration in warm dusk light",
     "about.eyebrow": "About",
     "about.title": "Research-driven training with enough engineering depth to turn ideas into reproducible systems.",
     "about.p1":
@@ -129,6 +130,7 @@ const translations = {
     "stats.two.label": "对齐研究",
     "stats.three.value": "arXiv",
     "stats.three.label": "近期预印本",
+    "visual.heroAlt": "带有黄昏光感的樱岛麻衣风格插图",
     "about.eyebrow": "个人简介",
     "about.title": "以研究为主线，同时具备把想法落成可复现系统的工程能力。",
     "about.p1":
@@ -203,6 +205,13 @@ function applyLanguage(lang) {
     const key = node.dataset.i18n;
     if (locale[key]) {
       node.textContent = locale[key];
+    }
+  });
+
+  document.querySelectorAll("[data-i18n-alt]").forEach((node) => {
+    const key = node.dataset.i18nAlt;
+    if (locale[key]) {
+      node.setAttribute("alt", locale[key]);
     }
   });
 

@@ -275,6 +275,39 @@ h1 span {
     var(--panel-strong);
 }
 
+.hero-portrait-frame {
+  position: relative;
+  margin: -6px -6px 22px;
+  border-radius: 24px;
+  overflow: hidden;
+  aspect-ratio: 16 / 10;
+  border: 1px solid rgba(111, 99, 200, 0.14);
+  box-shadow:
+    0 22px 46px rgba(76, 67, 125, 0.16),
+    inset 0 1px 0 rgba(255, 255, 255, 0.4);
+  background:
+    radial-gradient(circle at 20% 18%, rgba(255, 255, 255, 0.34), rgba(255, 255, 255, 0) 28%),
+    linear-gradient(135deg, rgba(111, 99, 200, 0.1), rgba(210, 108, 153, 0.08));
+}
+
+.hero-portrait-frame::after {
+  content: "";
+  position: absolute;
+  inset: 0;
+  background:
+    linear-gradient(180deg, rgba(13, 15, 27, 0), rgba(13, 15, 27, 0.08)),
+    linear-gradient(135deg, rgba(255, 255, 255, 0.08), rgba(255, 255, 255, 0));
+  pointer-events: none;
+}
+
+.hero-portrait {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  object-position: center 32%;
+  transform: scale(1.02);
+}
+
 .hero-card::before {
   content: "";
   position: absolute;
@@ -638,6 +671,10 @@ h1 span {
     opacity: 0.12;
   }
 
+  .hero-portrait-frame {
+    aspect-ratio: 4 / 3;
+  }
+
   .timeline article {
     grid-template-columns: 1fr;
     gap: 8px;
@@ -657,6 +694,10 @@ h1 span {
     width: 46%;
     right: -46px;
     opacity: 0.1;
+  }
+
+  .hero-portrait-frame {
+    margin-bottom: 18px;
   }
 
   .stat-grid {
