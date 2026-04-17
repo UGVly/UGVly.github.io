@@ -1578,3 +1578,11 @@ $$
 > 扩散模型不是“不会记忆”，而是“记忆解对应的谱模态更慢，因此训练动力学会先到达泛化解，再在更久以后才逐渐接近记忆解”。
 
 我认为这是这篇论文最重要的贡献：它把“早停有效”从经验事实，提升成了一个有明确随机矩阵 / 谱分解支撑的理论图景。
+
+---
+
+## 21. 参考论文与链接
+
+- 主论文 arXiv：<https://arxiv.org/abs/2505.17638>
+- 相关背景：Jonathan Ho, Ajay Jain, Pieter Abbeel, *Denoising Diffusion Probabilistic Models*：<https://arxiv.org/abs/2006.11239>
+- 相关背景：Yang Song et al., *Score-Based Generative Modeling through Stochastic Differential Equations*：<https://arxiv.org/abs/2011.13456>

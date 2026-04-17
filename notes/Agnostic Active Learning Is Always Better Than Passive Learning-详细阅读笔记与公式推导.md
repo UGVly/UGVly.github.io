@@ -1233,3 +1233,12 @@ $$
 2. 能不能给出 matching upper/lower bound 所需的新复杂度量，而不只用 \(d\) 和 \(s\)。
 3. 能不能把 AVID 的“方差隔离”原则迁移到更一般的 selective labeling / bandit feedback / partial monitoring 问题里。
 4. 能不能把这种思路转译到现代深度学习的 pool-based active learning heuristic 上，得到更 principled 的 acquisition design。
+
+---
+
+## 16. 参考论文与链接
+
+- 主论文 OpenReview：<https://openreview.net/forum?id=XPe55Uffd7>
+- 主论文 PDF：<https://openreview.net/pdf?id=XPe55Uffd7>
+- 相关背景：Steve Hanneke, *Activized Learning: Transforming Passive to Active with Improved Label Complexity*, JMLR 2012：<https://jmlr.org/papers/v13/hanneke12a.html>
+- 相关背景：Steve Hanneke, *Minimax Analysis of Active Learning*, arXiv：<https://arxiv.org/abs/1410.0996>

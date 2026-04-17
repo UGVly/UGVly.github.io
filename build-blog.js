@@ -1847,5 +1847,5 @@ const indexHtml = pageTemplate({
 fs.writeFileSync(path.join(outputDir, "index.html"), indexHtml, "utf8");
 
 console.log(
-  `Built ${posts.length} blog post(s) from ${sourceDir} (visibility filter: ${visibilityFilter})`
+  `Built ${posts.length} blog post(s) from ${sourceDir} to ${outputDir} (visibility filter: ${visibilityFilter})`
 );

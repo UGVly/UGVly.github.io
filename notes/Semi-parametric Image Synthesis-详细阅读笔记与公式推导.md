@@ -1022,3 +1022,12 @@ $$
 > 它不是让网络“无中生有”地生成整张图，而是先从真实世界里检索局部外观，再让网络负责把这些真实材料几何对齐、语义排序、边界融合，并补出缺失区域。
 
 这正是它比同时期纯参数方法更真实的根本原因。
+
+---
+
+## 17. 参考论文与链接
+
+- 主论文 arXiv：<https://arxiv.org/abs/1804.10992>
+- CVPR 2018 OpenAccess PDF：<https://openaccess.thecvf.com/content_cvpr_2018/papers/Qi_Semi-Parametric_Image_Synthesis_CVPR_2018_paper.pdf>
+- CVF 论文页面：<https://openaccess.thecvf.com/content_cvpr_2018/html/Qi_Semi-Parametric_Image_Synthesis_CVPR_2018_paper.html>
+- 评测相关：Hengshuang Zhao et al., *Pyramid Scene Parsing Network*：<https://arxiv.org/abs/1612.01105>
