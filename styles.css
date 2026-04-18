@@ -153,7 +153,7 @@ img {
   background:
     linear-gradient(90deg, rgba(255, 255, 255, 0.08), rgba(255, 255, 255, 0.22)),
     linear-gradient(180deg, rgba(16, 19, 33, 0.02), rgba(16, 19, 33, 0.08)),
-    url("./assets/images/mai-private/mai-lucifer.jpg");
+    url("./assets/images/mai-site/mai-lucifer.jpg");
   background-size: cover;
   background-position: 56% center;
   opacity: 0.1;
@@ -288,7 +288,7 @@ h1 span {
   background:
     linear-gradient(90deg, rgba(255, 255, 255, 0), rgba(255, 255, 255, 0.1)),
     linear-gradient(180deg, rgba(16, 19, 33, 0.04), rgba(16, 19, 33, 0.1)),
-    url("./assets/images/mai-private/mai-fanofanime2.png");
+    url("./assets/images/mai-site/mai-fanofanime2.png");
   background-size: cover;
   background-position: 74% 46%;
   opacity: 0.16;
@@ -427,7 +427,7 @@ h1 span {
   background:
     linear-gradient(90deg, rgba(255, 255, 255, 0), rgba(255, 255, 255, 0.08)),
     linear-gradient(180deg, rgba(16, 19, 33, 0.04), rgba(16, 19, 33, 0.1)),
-    url("./assets/images/mai-private/mai-lucifer.jpg");
+    url("./assets/images/mai-site/mai-lucifer.jpg");
   background-size: cover;
   background-position: 58% center;
   opacity: 0.12;
@@ -442,7 +442,7 @@ h1 span {
   border-radius: 50%;
   background:
     radial-gradient(circle, rgba(255, 255, 255, 0.08), rgba(255, 255, 255, 0)),
-    url("./assets/images/mai-private/mai-soda.jpg");
+    url("./assets/images/mai-site/mai-soda.jpg");
   background-size: cover;
   background-position: 54% 42%;
   opacity: 0.09;
@@ -456,7 +456,7 @@ h1 span {
   border-radius: 24px;
   background:
     linear-gradient(180deg, rgba(255, 255, 255, 0.04), rgba(255, 255, 255, 0)),
-    url("./assets/images/mai-private/mai-fanofanime2.png");
+    url("./assets/images/mai-site/mai-fanofanime2.png");
   background-size: cover;
   background-position: 72% 44%;
   opacity: 0.1;
@@ -472,7 +472,7 @@ h1 span {
   background:
     linear-gradient(90deg, rgba(255, 255, 255, 0), rgba(255, 255, 255, 0.08)),
     linear-gradient(180deg, rgba(16, 19, 33, 0.04), rgba(16, 19, 33, 0.1)),
-    url("./assets/images/mai-private/mai-lucifer.jpg");
+    url("./assets/images/mai-site/mai-lucifer.jpg");
   background-size: cover;
   background-position: 60% center;
   opacity: 0.11;
