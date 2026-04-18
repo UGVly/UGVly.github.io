@@ -15,6 +15,7 @@
       rel="stylesheet"
     />
     <link rel="stylesheet" href="./styles.css" />
+    <link rel="stylesheet" href="./visitor-counter.css" />
   </head>
   <body>
     <div class="page-shell">
@@ -82,6 +83,26 @@
                   <strong data-i18n="stats.three.value">arXiv</strong>
                   <span data-i18n="stats.three.label">Recent preprint</span>
                 </article>
+              </div>
+              <div class="visitor-counter" data-visitor-counter data-state="loading" aria-live="polite">
+                <p class="history-title visitor-counter-title" data-i18n="visitors.title">Live Visitor Count</p>
+                <p class="visitor-counter-note" data-visitor-note data-i18n="visitors.noteLoading">
+                  Loading live stats...
+                </p>
+                <div class="visitor-grid">
+                  <article>
+                    <strong id="visitor-site-uv">--</strong>
+                    <span data-i18n="visitors.siteUv">Visitors</span>
+                  </article>
+                  <article>
+                    <strong id="visitor-site-pv">--</strong>
+                    <span data-i18n="visitors.sitePv">Site Views</span>
+                  </article>
+                  <article>
+                    <strong id="visitor-page-pv">--</strong>
+                    <span data-i18n="visitors.pagePv">Page Views</span>
+                  </article>
+                </div>
               </div>
             </article>
           </aside>

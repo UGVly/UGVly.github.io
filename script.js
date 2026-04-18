@@ -5,6 +5,17 @@ const themeStorageKey = "personal-homepage-theme";
 const langStorageKey = "personal-homepage-lang";
 const pageTitle = document.querySelector("title");
 const metaDescription = document.querySelector('meta[name="description"]');
+const visitorApiUrl = "https://bsz.saop.cc/api";
+const visitorElements = {
+  root: document.querySelector("[data-visitor-counter]"),
+  note: document.querySelector("[data-visitor-note]"),
+  siteUv: document.getElementById("visitor-site-uv"),
+  sitePv: document.getElementById("visitor-site-pv"),
+  pagePv: document.getElementById("visitor-page-pv")
+};
+let activeLang = "en";
+let visitorState = "loading";
+let visitorStats = null;
 
 const translations = {
   en: {
@@ -38,6 +49,14 @@ const translations = {
     "stats.two.label": "Alignment focus",
     "stats.three.value": "arXiv",
     "stats.three.label": "Recent preprint",
+    "visitors.title": "Live Visitor Count",
+    "visitors.siteUv": "Visitors",
+    "visitors.sitePv": "Site Views",
+    "visitors.pagePv": "Page Views",
+    "visitors.noteLoading": "Loading live stats...",
+    "visitors.noteLive": "Synced automatically for the public site.",
+    "visitors.noteLocal": "Local preview does not increment the public counter.",
+    "visitors.noteError": "Visitor counter is temporarily unavailable.",
     "visual.heroAlt": "Sakurajima Mai inspired illustration in warm dusk light",
     "about.eyebrow": "About",
     "about.title": "Research-driven training with enough engineering depth to turn ideas into reproducible systems.",
@@ -130,6 +149,14 @@ const translations = {
     "stats.two.label": "对齐研究",
     "stats.three.value": "arXiv",
     "stats.three.label": "近期预印本",
+    "visitors.title": "实时访客统计",
+    "visitors.siteUv": "访客人数",
+    "visitors.sitePv": "站点访问",
+    "visitors.pagePv": "本页访问",
+    "visitors.noteLoading": "正在加载访问统计...",
+    "visitors.noteLive": "公开站点会自动同步这些数据。",
+    "visitors.noteLocal": "本地预览不会计入公开站点统计。",
+    "visitors.noteError": "访客统计暂时不可用。",
     "visual.heroAlt": "带有黄昏光感的樱岛麻衣风格插图",
     "about.eyebrow": "个人简介",
     "about.title": "以研究为主线，同时具备把想法落成可复现系统的工程能力。",
@@ -191,12 +218,17 @@ const translations = {
   }
 };
 
+function getLocale(lang) {
+  return translations[lang] || translations.en;
+}
+
 function applyTheme(theme) {
   document.body.classList.toggle("dark", theme === "dark");
 }
 
 function applyLanguage(lang) {
-  const locale = translations[lang] || translations.en;
+  activeLang = lang;
+  const locale = getLocale(lang);
   document.documentElement.lang = locale.htmlLang;
   pageTitle.textContent = locale.pageTitle;
   metaDescription.setAttribute("content", locale.description);
@@ -218,6 +250,119 @@ function applyLanguage(lang) {
   toggle.textContent = locale.themeToggle;
   langToggle.textContent = locale.langToggle;
   document.body.classList.toggle("zh", lang === "zh");
+  renderVisitorStats();
+}
+
+function formatVisitorNumber(value) {
+  if (!Number.isFinite(value)) {
+    return "--";
+  }
+
+  return new Intl.NumberFormat(activeLang === "zh" ? "zh-CN" : "en-US").format(value);
+}
+
+function setVisitorValue(node, value) {
+  if (!node) {
+    return;
+  }
+
+  node.textContent = formatVisitorNumber(value);
+}
+
+function renderVisitorStats() {
+  if (!visitorElements.root) {
+    return;
+  }
+
+  const locale = getLocale(activeLang);
+  visitorElements.root.dataset.state = visitorState;
+
+  if (visitorStats) {
+    setVisitorValue(visitorElements.siteUv, visitorStats.siteUv);
+    setVisitorValue(visitorElements.sitePv, visitorStats.sitePv);
+    setVisitorValue(visitorElements.pagePv, visitorStats.pagePv);
+  } else {
+    setVisitorValue(visitorElements.siteUv, NaN);
+    setVisitorValue(visitorElements.sitePv, NaN);
+    setVisitorValue(visitorElements.pagePv, NaN);
+  }
+
+  if (!visitorElements.note) {
+    return;
+  }
+
+  if (visitorState === "ready") {
+    visitorElements.note.textContent = locale["visitors.noteLive"];
+    return;
+  }
+
+  if (visitorState === "local") {
+    visitorElements.note.textContent = locale["visitors.noteLocal"];
+    return;
+  }
+
+  if (visitorState === "error") {
+    visitorElements.note.textContent = locale["visitors.noteError"];
+    return;
+  }
+
+  visitorElements.note.textContent = locale["visitors.noteLoading"];
+}
+
+function shouldTrackVisitorStats() {
+  if (window.location.protocol === "file:") {
+    return false;
+  }
+
+  const blockedHosts = new Set(["localhost", "127.0.0.1"]);
+  return !blockedHosts.has(window.location.hostname);
+}
+
+async function loadVisitorStats() {
+  if (!visitorElements.root) {
+    return;
+  }
+
+  if (!shouldTrackVisitorStats()) {
+    visitorState = "local";
+    renderVisitorStats();
+    return;
+  }
+
+  visitorState = "loading";
+  renderVisitorStats();
+
+  try {
+    const response = await fetch(visitorApiUrl, {
+      method: "POST",
+      credentials: "include",
+      headers: {
+        "x-bsz-referer": window.location.href
+      }
+    });
+
+    if (!response.ok) {
+      throw new Error(`Visitor counter request failed with ${response.status}`);
+    }
+
+    const payload = await response.json();
+
+    if (!payload || !payload.success || !payload.data) {
+      throw new Error("Visitor counter returned an invalid payload");
+    }
+
+    visitorStats = {
+      siteUv: Number(payload.data.site_uv),
+      sitePv: Number(payload.data.site_pv),
+      pagePv: Number(payload.data.page_pv)
+    };
+    visitorState = "ready";
+  } catch (error) {
+    console.warn("Visitor counter failed to load.", error);
+    visitorState = "error";
+  }
+
+  renderVisitorStats();
 }
 
 const savedTheme = localStorage.getItem(themeStorageKey);
@@ -240,6 +385,8 @@ langToggle.addEventListener("click", () => {
   applyLanguage(nextLang);
   localStorage.setItem(langStorageKey, nextLang);
 });
+
+loadVisitorStats();
 
 const observer = new IntersectionObserver(
   (entries) => {
