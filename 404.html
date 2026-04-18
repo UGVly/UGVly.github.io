@@ -3,12 +3,8 @@
   <head>
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <title>Site Temporarily Unavailable</title>
+    <title>Temporarily Unavailable</title>
     <meta name="robots" content="noindex,nofollow,noarchive" />
-    <meta
-      name="description"
-      content="This site is temporarily unavailable while access is restricted."
-    />
     <style>
       :root {
         --bg: #121524;
@@ -17,7 +13,6 @@
         --muted: #c9c1e6;
         --line: rgba(245, 242, 255, 0.12);
         --accent: #b5a1ff;
-        --accent-2: #ff9fc7;
       }
 
       * {
@@ -40,7 +35,7 @@
       }
 
       .notice {
-        width: min(680px, 100%);
+        width: min(640px, 100%);
         padding: 40px 32px;
         border: 1px solid var(--line);
         border-radius: 28px;
@@ -60,49 +55,24 @@
 
       h1 {
         margin: 0;
-        font-size: clamp(2rem, 6vw, 3.5rem);
-        line-height: 1.05;
+        font-size: clamp(2rem, 6vw, 3.2rem);
+        line-height: 1.08;
       }
 
       p {
         margin: 18px 0 0;
         color: var(--muted);
-        font-size: 1.04rem;
+        font-size: 1.02rem;
         line-height: 1.8;
-      }
-
-      .status {
-        display: inline-flex;
-        margin-top: 24px;
-        padding: 10px 14px;
-        border-radius: 999px;
-        border: 1px solid var(--line);
-        color: var(--text);
-        background: rgba(255, 255, 255, 0.06);
-        font-weight: 700;
-      }
-
-      .hint {
-        margin-top: 28px;
-        padding-top: 20px;
-        border-top: 1px solid var(--line);
-        color: var(--accent-2);
-        font-size: 0.95rem;
       }
     </style>
   </head>
   <body>
     <main class="notice">
-      <p class="eyebrow">Temporary Closure</p>
-      <h1>该站点已暂时关闭</h1>
-      <p>
-        云端网页目前已暂停对外提供内容，用于临时下线和访问收敛。现有公开页面与博客入口已移除。
-      </p>
-      <p>
-        This website is temporarily unavailable while public access is restricted.
-      </p>
-      <div class="status">Status: Offline</div>
-      <p class="hint">如需恢复，我可以将站点回滚到关闭前的公开版本。</p>
+      <p class="eyebrow">404 / Offline</p>
+      <h1>页面暂不可访问</h1>
+      <p>该站点目前处于临时关闭状态，因此这个页面没有对外提供。</p>
+      <p>This page is unavailable because the site is temporarily offline.</p>
     </main>
   </body>
 </html>
