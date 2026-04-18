@@ -77,6 +77,256 @@ $$
 
 ---
 
+## 1.5 读前预备知识：符号、矩阵谱与随机矩阵
+
+这一节不是论文原文内容，而是为了把后面的推导彻底讲顺。你可以把它当成“进入正文前的工具箱”。
+
+### 1.5.1 这篇论文里最重要的符号表
+
+先把最常见的记号集中说明一下。很多地方之所以读着费劲，不是公式难，而是符号在脑子里没有固定下来。
+
+- \(d\)：数据维度。  
+  如果图像是 \(32\times 32\) 灰度图，那么可以理解成 \(d=1024\)。
+
+- \(n\)：训练样本数。
+
+- \(p\)：模型里可训练特征的维度。在随机特征模型里，它就是隐藏层宽度；在真实网络里，它可以粗略对应“模型容量”。
+
+- \(\psi_n=n/d\)、\(\psi_p=p/d\)：高维极限里最常见的两个无量纲比例。
+
+- \(\mathbf x_0\)：原始数据点。
+
+- \(\mathbf x_t\)：扩散到时间 \(t\) 后的 noisy 样本。
+
+- \(\Delta_t=1-e^{-2t}\)：前向 OU 过程产生的噪声方差系数。
+
+- \(P_0\)：真实数据分布；\(P_t\)：加噪后的分布。
+
+- \(\mathbf s(\mathbf x,t)=\nabla_{\mathbf x}\log P_t(\mathbf x)\)：时间 \(t\) 的真实 score。
+
+- \(\mathbf s_{\mathrm{emp}}(\mathbf x,t)\)：把总体分布 \(P_0\) 换成训练集经验分布以后得到的经验 score。
+
+- \(\mathbf\Sigma=\mathbb E[\mathbf x\mathbf x^\top]\)：数据协方差矩阵。
+
+- \(\mathbf U\)：随机特征学习动力学里最关键的 \(p\times p\) 相关矩阵；训练的时间尺度全部由它的特征值控制。
+
+- \(\mathbf V\)：把网络特征和噪声 \(\boldsymbol\xi\) 联系起来的矩阵。
+
+- \(\rho(\lambda)\)：\(\mathbf U\) 的谱密度；可以粗糙理解成“有多少特征值落在 \(\lambda\) 附近”。
+
+- \(\rho_1,\rho_2\)：论文发现的两个主要谱团块。后面会看到：
+  - \(\rho_2\) 对应快模态，先学会，主导泛化；
+  - \(\rho_1\) 对应慢模态，后学会，主导记忆。
+
+### 1.5.2 “矩阵的谱”到底是什么意思
+
+如果 \(M\in\mathbb R^{p\times p}\) 是对称矩阵，它可以正交对角化：
+$$
+M = Q\Lambda Q^\top,
+\qquad
+\Lambda=\operatorname{diag}(\lambda_1,\dots,\lambda_p).
+$$
+
+这里：
+
+- \(\lambda_1,\dots,\lambda_p\) 是特征值；
+- \(Q=[\mathbf v_1,\dots,\mathbf v_p]\) 的列向量是单位正交特征向量；
+- 矩阵作用在每个特征方向上，只是做一个数乘：
+$$
+M\mathbf v_i=\lambda_i\mathbf v_i.
+$$
+
+所以分析一个对称矩阵，核心就是分析：
+
+1. 特征值的大小；
+2. 每个特征值对应的方向在干什么。
+
+对动力系统来说尤其如此。因为如果
+$$
+\dot{\mathbf a}=-M\mathbf a,
+$$
+那么沿着第 \(i\) 个特征方向的衰减速度就是
+$$
+e^{-\lambda_i t}.
+$$
+这就是为什么谱和“学习快慢”天然联系在一起。
+
+### 1.5.3 经验谱分布、Stieltjes 变换与 resolvent
+
+对一个 \(p\times p\) 对称矩阵 \(M\)，定义它的经验谱分布
+$$
+\mu_M
+:=
+\frac1p\sum_{i=1}^p \delta_{\lambda_i(M)}.
+$$
+
+意思很简单：把每个特征值都当成一颗点质量，再平均。
+
+如果 \(p\) 很大，我们关心的不是每个单独特征值，而是整体分布长什么样。这时最方便的工具就是 **resolvent**：
+$$
+G_M(z):=(M-zI)^{-1},
+\qquad z\in\mathbb C\setminus \operatorname{Sp}(M).
+$$
+
+以及它的归一化迹，也就是 **Stieltjes 变换**：
+$$
+m_M(z)
+:=
+\frac1p\operatorname{Tr}(M-zI)^{-1}
+=
+\frac1p\sum_{i=1}^p \frac{1}{\lambda_i-z}.
+$$
+
+你可以记住两个最重要的事实：
+
+1. 如果 \(\lambda_0\) 附近堆了很多特征值，那么 \(m_M(z)\) 在 \(z\approx\lambda_0\) 时会有明显响应。
+2. 如果 \(\mu_M\) 在某一点有一个 delta 峰，\(m_M(z)\) 会出现一个极点。
+
+更准确地说，如果
+$$
+\mu_M = f\,\delta_{\lambda_0}+\text{(其他连续部分)},
+$$
+那么
+$$
+m_M(z)=\frac{f}{\lambda_0-z}+\text{(一个在 \(z=\lambda_0\) 附近有界的项)}.
+$$
+
+这正是后面论文用来识别 \(s_t^2\) 处 delta 峰的原因。
+
+### 1.5.4 为什么取虚部就能“看见”谱密度
+
+如果把 \(z\) 取成
+$$
+z=\lambda+i\varepsilon,\qquad \varepsilon>0,
+$$
+则
+$$
+\frac{1}{x-(\lambda+i\varepsilon)}
+=
+\frac{x-\lambda}{(x-\lambda)^2+\varepsilon^2}
++
+i\frac{\varepsilon}{(x-\lambda)^2+\varepsilon^2}.
+$$
+
+注意虚部：
+$$
+\operatorname{Im}\frac{1}{x-(\lambda+i\varepsilon)}
+=
+\frac{\varepsilon}{(x-\lambda)^2+\varepsilon^2}.
+$$
+
+当 \(\varepsilon\downarrow0\) 时，它会变成以 \(\lambda\) 为中心的尖峰，极限上等价于 \(\pi\delta(x-\lambda)\)。因此
+$$
+\rho(\lambda)
+=
+\lim_{\varepsilon\downarrow0}
+\frac{1}{\pi}\operatorname{Im}m_M(\lambda+i\varepsilon)
+$$
+就能把谱密度恢复出来。
+
+这就是为什么随机矩阵文献里几乎总是先求 resolvent / Stieltjes 变换，而不是直接求特征值密度。
+
+### 1.5.5 bulk、atom、support 这些词到底是什么意思
+
+随机矩阵里有三个词你会反复看到：
+
+- **support**：分布真正有质量的区间。
+- **bulk**：一整片连续特征值云，通常表示很多特征值形成的连续团块。
+- **atom / delta peak**：某个点上有宏观权重的尖峰，也就是
+$$
+f\,\delta(\lambda-\lambda_0).
+$$
+
+所以论文说
+$$
+\rho(\lambda)
+=
+\left(1-\frac{1+\psi_n}{\psi_p}\right)\delta(\lambda-s_t^2)
++
+\frac{\psi_n}{\psi_p}\rho_1(\lambda)
++
+\frac{1}{\psi_p}\rho_2(\lambda)
+$$
+时，意思就是：
+
+- 有一大批特征值几乎就卡在 \(s_t^2\) 这个点上；
+- 还有两个连续的特征值团块，分别叫 \(\rho_1\) 和 \(\rho_2\)。
+
+### 1.5.6 Marchenko--Pastur 定律为什么总会冒出来
+
+如果 \(X\in\mathbb R^{d\times n}\) 的列是 iid 高斯向量，那么样本协方差矩阵
+$$
+\frac{XX^\top}{n}
+$$
+在 \(d,n\to\infty\)、\(n/d\to\psi_n\) 时，其特征值不会乱跑，而是集中到一个确定的极限分布，这就是 Marchenko--Pastur 定律。
+
+最经典的情形是总体协方差是单位阵。此时 bulk 支撑大致在
+$$
+\left(1-\sqrt{\frac{d}{n}}\right)^2
+\quad\text{到}\quad
+\left(1+\sqrt{\frac{d}{n}}\right)^2
+$$
+之间。
+
+你不需要死记它的密度公式，但一定要抓住它背后的物理意义：
+
+- 随机样本协方差不会只有一个特征值尺度；
+- 它会形成一个明确的 bulk；
+- bulk 的左右边界通常能直接决定学习动力学里“最快 / 最慢”模态的时间尺度。
+
+后面论文中
+$$
+\lambda_\pm
+=
+s_t^2+v_t^2\left(1\pm\sqrt{\frac{\psi_p}{\psi_n}}\right)^2
+$$
+这个边界形式，本质上就是一个经过平移和缩放的 Marchenko--Pastur 型边界。
+
+### 1.5.7 rank 为什么能决定 delta 峰的权重
+
+还有一个后面会大量用到的简单线性代数事实：
+
+如果矩阵 \(M\in\mathbb R^{p\times p}\) 的秩最多是 \(r\)，那么它至少有
+$$
+p-r
+$$
+个零特征值。
+
+更一般地，如果
+$$
+M=s_t^2 I + \text{(一个秩不超过 \(r\) 的扰动)},
+$$
+那么至少会有
+$$
+p-r
+$$
+个特征值等于 \(s_t^2\)。
+
+这就是论文里 delta 峰为什么能通过“自由度计数”直接读出来：
+
+- \(W\) 带来至多 \(d\) 个非平凡方向；
+- 数据项带来至多 \(n\) 个非平凡方向；
+- 剩下的 \(p-d-n\) 个方向什么也没学到，只看到 \(s_t^2 I\)。
+
+### 1.5.8 论文里真正想证明的东西，其实可以先用一句话记住
+
+如果把训练写成线性动力系统，那么每个特征模态的学习速度都正比于对应特征值的大小。
+
+因此：
+
+- 大特征值对应快模态，先学会；
+- 小特征值对应慢模态，后学会。
+
+而论文的全部内容，本质上就是说明：
+
+1. “总体结构”对应一团较大的特征值；
+2. “训练集特异的高频细节”对应一团较小的特征值；
+3. 所以模型会先学会泛化，再学会记忆。
+
+理解了这一点，后面所有公式都是在把这句话严格化。
+
+---
+
 ## 2. 扩散模型基本设定：从前向 OU 到 score learning
 
 ### 2.1 前向过程
@@ -148,6 +398,50 @@ $$
 $$
 
 这就是标准 score-based diffusion 的反向生成公式。
+
+### 2.3 把 \(P_t\) 明确写成卷积形式
+
+为了后面不跳步，我们把“\(P_t\) 是什么”写得再明确一点。
+
+如果原始数据 \(\mathbf x_0\sim P_0\)，且
+$$
+\mathbf x_t=e^{-t}\mathbf x_0+\sqrt{\Delta_t}\,\boldsymbol\xi,
+\qquad
+\boldsymbol\xi\sim\mathcal N(0,I_d),
+$$
+那么条件分布
+$$
+P(\mathbf x_t=\mathbf y\mid \mathbf x_0=\mathbf x_0)
+$$
+是一个高斯密度：
+$$
+\frac{1}{(2\pi\Delta_t)^{d/2}}
+\exp\!\left(
+-\frac{\|\mathbf y-e^{-t}\mathbf x_0\|_2^2}{2\Delta_t}
+\right).
+$$
+
+因此 \(P_t\) 就是把 \(P_0\) 用这个高斯核做卷积：
+$$
+P_t(\mathbf y)
+=
+\int_{\mathbb R^d}
+P_0(\mathbf x_0)\,
+\frac{1}{(2\pi\Delta_t)^{d/2}}
+\exp\!\left(
+-\frac{\|\mathbf y-e^{-t}\mathbf x_0\|_2^2}{2\Delta_t}
+\right)
+\mathrm d\mathbf x_0.
+$$
+
+这个式子很重要，因为：
+
+- 如果把 \(P_0\) 换成经验分布 \(\frac1n\sum_\nu \delta_{\mathbf x^\nu}\)，就直接得到经验密度 \(P_t^{\mathrm{emp}}\)；
+- 对这个积分式直接求梯度，就能得到 Tweedie 型公式和经验 score 的显式表达。
+
+所以你可以把扩散模型里时间 \(t\) 的密度理解成：
+
+> 先把所有原始样本缩小到 \(e^{-t}\mathbf x_0\) 的位置，再在它们周围糊上一层方差为 \(\Delta_t\) 的高斯云。
 
 ---
 
@@ -278,6 +572,130 @@ $$
 
 这说明 score matching 确实在学真实 score。
 
+### 3.3 Tweedie 型恒等式不跳步推导
+
+上面我直接用了
+$$
+\nabla_{\mathbf y}\log P_t(\mathbf y)
+=
+-\frac{1}{\Delta_t}
+\left(
+\mathbf y-e^{-t}\mathbb E[\mathbf x_0\mid \mathbf x_t=\mathbf y]
+\right),
+$$
+这里我们把它完整推一遍。
+
+从上一节的卷积公式出发：
+$$
+P_t(\mathbf y)
+=
+\int
+P_0(\mathbf x_0)\,
+K_t(\mathbf y,\mathbf x_0)\,
+\mathrm d\mathbf x_0,
+$$
+其中高斯核
+$$
+K_t(\mathbf y,\mathbf x_0)
+:=
+\frac{1}{(2\pi\Delta_t)^{d/2}}
+\exp\!\left(
+-\frac{\|\mathbf y-e^{-t}\mathbf x_0\|_2^2}{2\Delta_t}
+\right).
+$$
+
+对 \(\mathbf y\) 求梯度：
+$$
+\nabla_{\mathbf y}P_t(\mathbf y)
+=
+\int
+P_0(\mathbf x_0)\,
+\nabla_{\mathbf y}K_t(\mathbf y,\mathbf x_0)\,
+\mathrm d\mathbf x_0.
+$$
+
+而
+$$
+\nabla_{\mathbf y}K_t(\mathbf y,\mathbf x_0)
+=
+K_t(\mathbf y,\mathbf x_0)\cdot
+\left(
+-\frac{\mathbf y-e^{-t}\mathbf x_0}{\Delta_t}
+\right).
+$$
+
+所以
+$$
+\nabla_{\mathbf y}P_t(\mathbf y)
+=
+\int
+P_0(\mathbf x_0)\,
+K_t(\mathbf y,\mathbf x_0)\,
+\left(
+-\frac{\mathbf y-e^{-t}\mathbf x_0}{\Delta_t}
+\right)
+\mathrm d\mathbf x_0.
+$$
+
+两边除以 \(P_t(\mathbf y)\)：
+$$
+\nabla_{\mathbf y}\log P_t(\mathbf y)
+=
+\frac{
+\int
+P_0(\mathbf x_0)\,
+K_t(\mathbf y,\mathbf x_0)\,
+\left(
+-\frac{\mathbf y-e^{-t}\mathbf x_0}{\Delta_t}
+\right)
+\mathrm d\mathbf x_0
+}{
+\int
+P_0(\mathbf x_0)\,
+K_t(\mathbf y,\mathbf x_0)\,
+\mathrm d\mathbf x_0
+}.
+$$
+
+而 Bayes 公式告诉我们：
+$$
+P(\mathbf x_0\mid \mathbf x_t=\mathbf y)
+\propto
+P_0(\mathbf x_0)K_t(\mathbf y,\mathbf x_0).
+$$
+
+因此上式正好就是对后验分布取期望：
+$$
+\nabla_{\mathbf y}\log P_t(\mathbf y)
+=
+\mathbb E\left[
+-\frac{\mathbf y-e^{-t}\mathbf x_0}{\Delta_t}
+\;\middle|\;
+\mathbf x_t=\mathbf y
+\right].
+$$
+
+把 \(\mathbf y\) 提出期望号外面，就得到
+$$
+\boxed{
+\nabla_{\mathbf y}\log P_t(\mathbf y)
+=
+-\frac{1}{\Delta_t}
+\left(
+\mathbf y-e^{-t}\mathbb E[\mathbf x_0\mid \mathbf x_t=\mathbf y]
+\right)
+}
+$$
+
+这个恒等式有一个非常重要的直觉：
+
+- score 不是一个神秘黑盒；
+- 它就是“当前点 \(\mathbf y\) 与后验均值 \(e^{-t}\mathbb E[\mathbf x_0\mid \mathbf x_t=\mathbf y]\) 之间的偏差”除以 \(\Delta_t\)。
+
+也就是说，score 本质上在告诉你：
+
+> 如果我现在在 \(\mathbf y\)，从贝叶斯角度看，最可能对应的干净数据位置在哪里？我应该往哪个方向拉回去？
+
 ---
 
 ## 4. 经验损失的极小化器为什么会导致记忆
@@ -369,6 +787,79 @@ $$
 所以如果模型真的学到经验 score，它最终就会记忆训练集。
 
 这也是论文的起点：**问题不在于经验 score 不会记忆，而在于实际训练为何没有立刻学到它。**
+
+### 4.2 小噪声极限下，经验 score 为什么一定像“弹簧力”
+
+为了更清楚地看到经验 score 为什么会记忆，我们看一个局部极限。
+
+假设 \(\mathbf x\) 非常接近某个训练样本 \(\mathbf x^\mu\) 的缩放位置 \(e^{-t}\mathbf x^\mu\)，并且比起其他训练样本，它对应的高斯权重远大于别的项：
+$$
+\omega_\mu(\mathbf x,t)\gg \omega_\nu(\mathbf x,t),
+\qquad \nu\neq \mu.
+$$
+
+这时分子和分母都由 \(\mu\) 这一项主导，因此
+$$
+\mathbf s_{\mathrm{emp}}(\mathbf x,t)
+\approx
+\frac{
+\omega_\mu(\mathbf x,t)\dfrac{e^{-t}\mathbf x^\mu-\mathbf x}{\Delta_t}
+}{
+\omega_\mu(\mathbf x,t)
+}
+=
+\frac{e^{-t}\mathbf x^\mu-\mathbf x}{\Delta_t}.
+$$
+
+也就是说，在训练样本附近，
+$$
+\boxed{
+\mathbf s_{\mathrm{emp}}(\mathbf x,t)
+\approx
+-\frac{1}{\Delta_t}
+\big(\mathbf x-e^{-t}\mathbf x^\mu\big)
+}
+$$
+
+这就是一个标准的线性回复力，也就是“弹簧力”：
+
+- 如果 \(\mathbf x\) 在训练样本右边，score 就把你往左拉；
+- 如果 \(\mathbf x\) 在训练样本左边，score 就把你往右拉；
+- 拉回强度正比于偏离量；
+- 比例系数是 \(1/\Delta_t\)。
+
+所以当 \(t\) 很小时，\(\Delta_t\) 很小，回复力会非常大：
+$$
+\frac{1}{\Delta_t}\to\infty.
+$$
+
+这就解释了为什么小噪声时经验 score 会极强地吸附训练样本。
+
+### 4.3 一维直觉：经验 score = 一堆局部吸引井叠加
+
+如果你更喜欢一维图像化理解，可以把
+$$
+P_t^{\mathrm{emp}}(x)
+=
+\frac1n\sum_{\nu=1}^n \mathcal N(x;e^{-t}x^\nu,\Delta_t)
+$$
+想成在数轴上放了 \(n\) 个高斯包。
+
+那么
+$$
+s_{\mathrm{emp}}(x,t)=\partial_x \log P_t^{\mathrm{emp}}(x)
+$$
+就是这个“高斯包混合密度”的对数导数。
+
+在每个训练样本附近，它都像一个把粒子往中心拉的向量场；远离所有样本时，不同高斯包的贡献互相抵消，场会变弱。
+
+所以经验 score 的向量场像是：
+
+- 在每个训练点附近有一个稳定吸引井；
+- 井与井之间可能存在分界面；
+- 反向生成时，轨道容易掉进某个训练样本的 basin of attraction。
+
+这就是论文说“如果真的学到经验 score，就必然会记忆”的几何图像。
 
 ---
 
@@ -467,6 +958,74 @@ d,p,n\to\infty,\qquad \psi_p,\psi_n \text{ 固定}.
 $$
 
 这个模型不再是“同一个网络同时拟合全部扩散时间”，而是固定 \(t\) 单独研究。这当然比真实 DDPM 简化，但它保留了论文想抓住的核心机制：**score learning 的谱分解与时间尺度分离。**
+
+### 6.1 把每个对象的尺寸都写出来
+
+这里最容易让人迷糊的是矩阵尺寸。我们把它们全部写清楚。
+
+- 输入数据
+$$
+\mathbf x\in\mathbb R^d.
+$$
+
+- 冻结的随机第一层
+$$
+\mathbf W\in\mathbb R^{p\times d}.
+$$
+所以
+$$
+\frac{\mathbf W\mathbf x}{\sqrt d}\in\mathbb R^p.
+$$
+
+- 非线性特征向量
+$$
+\sigma\!\left(\frac{\mathbf W\mathbf x}{\sqrt d}\right)\in\mathbb R^p.
+$$
+
+- 可训练第二层
+$$
+\mathbf A\in\mathbb R^{d\times p}.
+$$
+因此
+$$
+\frac{\mathbf A}{\sqrt p}\sigma\!\left(\frac{\mathbf W\mathbf x}{\sqrt d}\right)\in\mathbb R^d,
+$$
+正好是一个 \(d\) 维向量，和 score 的维度一致。
+
+- 训练相关矩阵
+$$
+\mathbf U\in\mathbb R^{p\times p},
+\qquad
+\mathbf V\in\mathbb R^{p\times d}.
+$$
+
+所以
+$$
+\mathbf V^\top\in\mathbb R^{d\times p},
+\qquad
+\mathbf V^\top \mathbf U^{-1}\in\mathbb R^{d\times p},
+$$
+和 \(\mathbf A/\sqrt p\) 的尺寸正好一致。
+
+这一步虽然看起来“基础”，但非常重要。很多论文里矩阵推导之所以读不下去，不是因为算不动，而是因为中间一步压根没确认矩阵乘法是否合法。
+
+### 6.2 为什么这个模型虽然简化，但仍然抓住了本质
+
+这个随机特征模型做了两件极大的简化：
+
+1. 第一层权重不训练；
+2. 只固定一个扩散时间 \(t\)。
+
+但它保留了两件对本文最重要的结构：
+
+- 训练目标依然是 score matching；
+- 训练动力学依然可以写成“线性系统 + 某个数据相关相关矩阵 \(\mathbf U\)”。
+
+论文真正想解释的不是 U-Net 的每一层到底怎么学，而是：
+
+> 为什么存在一批快模态先把总体结构学出来，另一批慢模态很久以后才把训练集细节学出来？
+
+只要这个核心结构还在，简化模型就仍然有解释力。
 
 ---
 
@@ -714,6 +1273,38 @@ $$
 
 > \(\mathbf U\) 的谱长什么样？
 
+### 8.7 用一维线性 ODE 理解“特征值越小学得越慢”
+
+如果你觉得矩阵指数还是抽象，我们先退回一维。
+
+考虑最简单的 ODE：
+$$
+\dot a(\tau)=-\lambda\big(a(\tau)-a_\star\big),
+$$
+其中 \(a_\star\) 是目标值，\(\lambda>0\)。
+
+它的解是
+$$
+a(\tau)=a_\star + (a(0)-a_\star)e^{-\lambda \tau}.
+$$
+
+这里 \(\lambda\) 越大，指数衰减越快，系统越快接近稳态；\(\lambda\) 越小，系统越慢。
+
+矩阵情形只不过是把这个一维故事拆成很多彼此正交的特征方向：
+
+- 在第 \(i\) 个特征方向上，系统就像
+$$
+\dot a_i(\tau)=-\frac{2\Delta_t}{\psi_p}\lambda_i\big(a_i(\tau)-a_{i,\star}\big),
+$$
+- 因此时间尺度就是
+$$
+\tau_i\sim \frac{\psi_p}{\Delta_t\lambda_i}.
+$$
+
+所以“学习速度由谱决定”本质上只是：
+
+> 每个特征方向都是一个独立的一维指数松弛，而小特征值对应慢松弛。
+
 ---
 
 ## 9. Gaussian equivalence：把 \(\mathbf U\) 化成可分析的随机矩阵
@@ -900,6 +1491,43 @@ $$
 
 也就是说，问题从“分析神经网络训练”变成了“分析某个随机矩阵的谱”。
 
+### 9.5 为什么 Gaussian equivalence 看起来合理
+
+这一步第一次读往往会觉得很“魔法”。其实它背后的想法很朴素：
+
+> 当维度很大时，非线性特征 \(\sigma(\mathbf W\mathbf x/\sqrt d)\) 的二阶统计性质，往往只依赖于少数低阶相关量；因此可以用一个高斯代理模型来复现这些二阶统计。
+
+更具体地说，令
+$$
+g_i=\frac{\mathbf W_i^\top \mathbf x}{\sqrt d},
+$$
+其中 \(\mathbf W_i\) 是 \(\mathbf W\) 的第 \(i\) 行。高维下，\(g_i\) 近似高斯。
+
+如果 \(g_i,g_j\) 的相关系数很小，那么对
+$$
+\mathbb E[\sigma(g_i)\sigma(g_j)]
+$$
+做 Hermite 展开或 Mehler 展开，主导项通常只取决于：
+
+1. 对角上的方差；
+2. 非对角上的线性相关。
+
+因此 \(\sigma(g)\) 可以被近似分解成：
+
+- 一个沿着原始信号方向的线性部分；
+- 一个与样本有关但各向同性的高斯噪声部分；
+- 再加上一个对角平移项。
+
+这就是为什么 \(\mathbf U\) 的 GEP 结果会长成
+$$
+\frac{\mathbf G\mathbf G^\top}{n}+b_t^2\frac{\mathbf W\mathbf W^\top}{d}+s_t^2I
+$$
+这种“样本协方差 + 总体协方差 + 各向同性噪声”的结构。
+
+如果你只记一个核心直觉，那就是：
+
+> GEP 不是说“原模型真的等于高斯模型”，而是说“对于我们关心的谱和二阶统计，高维极限下它们可以用同一个高斯代理来替代”。
+
 ---
 
 ## 10. 从 GEP 到谱方程：三元 saddle-point 方程组
@@ -970,7 +1598,43 @@ $$
 \frac{1}{\pi}\operatorname{Im}q(\lambda+i\varepsilon).
 $$
 
-### 10.1 这个方程怎么来的
+### 10.1 先解释 \(q,r,s\) 这三个量各自到底在测什么
+
+第一次看到
+$$
+q(z),\ r(z),\ s(z)
+$$
+很多人会疑惑：为什么不是只写一个 \(q(z)\)，还要多写 \(r,s\)？
+
+原因是：
+
+- \(q(z)\) 是最标准的 resolvent trace，只看整体谱；
+- \(r(z)\) 和 \(s(z)\) 是“带有方向权重的 resolvent trace”，它们不只看特征值，还看 resolvent 和 \(\mathbf W,\mathbf\Sigma\) 这些特殊方向的耦合。
+
+更具体地说：
+
+$$
+q(z)=\frac1p\operatorname{Tr}(U-zI)^{-1}
+$$
+只统计所有特征值；
+
+$$
+s(z)=\frac1p\operatorname{Tr}\big(W^\top(U-zI)^{-1}W\big)
+$$
+测的是 resolvent 在 \(W\) 张成的方向上有多大；
+
+$$
+r(z)=\frac1p\operatorname{Tr}\big(\Sigma^{1/2}W^\top(U-zI)^{-1}W\Sigma^{1/2}\big)
+$$
+则进一步把数据协方差 \(\Sigma\) 的方向信息也编码了进去。
+
+所以从数学上说，这三者共同构成一个闭合的自洽系统；从物理上说，它们分别编码了：
+
+- 纯谱信息；
+- 随机特征方向信息；
+- 数据协方差方向信息。
+
+### 10.2 这个方程怎么来的
 
 论文附录的套路是：
 
@@ -993,6 +1657,66 @@ $$
 
 - 方程组的结构非常清楚；
 - 后面两个时间尺度都是直接从这个方程组的不同标度解中读出来的。
+
+### 10.3 如果不想碰 replica，最少该记住什么
+
+如果你暂时不想深入 replica trick，那最少要记住下面三点：
+
+1. 对称随机矩阵的谱问题，通常会先转成 resolvent / Stieltjes 变换问题；
+2. 在高维极限里，这些变换往往满足自洽方程；
+3. 只要能得到自洽方程，谱边界、delta 峰、多个 bulk 的权重和位置，都可以从这些方程里读出来。
+
+换句话说，论文真正依赖 replica 的地方，不是最终结论的“物理直觉”，而是具体自洽方程的推导捷径。后面谱分解与时间尺度结论本身，是完全可以独立理解的。
+
+### 10.4 把 \(q(z)\) 当成“平均后的 \(\frac{1}{\lambda-z}\)”来看
+
+这一点非常值得单独说，因为它是后面所有谱结论的直觉核心。
+
+设
+$$
+\mathbf U = Q\operatorname{diag}(\lambda_1,\dots,\lambda_p)Q^\top.
+$$
+那么
+$$
+(\mathbf U-zI)^{-1}
+=
+Q\operatorname{diag}\!\left(
+\frac{1}{\lambda_1-z},\dots,\frac{1}{\lambda_p-z}
+\right)Q^\top.
+$$
+
+于是
+$$
+q(z)
+=
+\frac1p\operatorname{Tr}(\mathbf U-zI)^{-1}
+=
+\frac1p\sum_{i=1}^p \frac{1}{\lambda_i-z}.
+$$
+
+所以你完全可以把 \(q(z)\) 理解成：
+
+> 把每个特征值 \(\lambda_i\) 先代入函数 \(\frac{1}{\lambda-z}\)，再做平均。
+
+这句话虽然朴素，但几乎已经包含了全部谱分析直觉。
+
+因为：
+
+- 如果很多特征值都落在某个区间附近，那么 \(q(z)\) 在那个区间附近会有连续响应；
+- 如果在某一点 \(\lambda_0\) 上堆了宏观数量级的特征值，那么 \(q(z)\) 里会出现
+$$
+\frac{\text{权重}}{\lambda_0-z}
+$$
+这样的极点；
+- 如果 \(z=\lambda+i\varepsilon\) 穿过某个 bulk，那么
+$$
+\frac{1}{\lambda_i-(\lambda+i\varepsilon)}
+$$
+会出现虚部，于是谱密度非零。
+
+因此后面你看到作者“求 \(q(z)\) 的自洽方程”，本质上就是：
+
+> 不直接盯着 \(p\) 个特征值，而是用一个复函数 \(q(z)\) 把整个谱一次性打包起来。
 
 ![随机特征模型中的训练/测试误差曲线](../../assets/papers/why-diffusion-models-dont-memorize/rf-train-test.png)
 
@@ -1073,6 +1797,54 @@ $$
 
 而且这部分特征向量满足 \(\mathbf W^\top\mathbf v=0\)，对训练和测试损失都没有贡献，所以它们和泛化 / 记忆动力学无关。
 
+### 11.3 这里其实就是线性代数里的 rank-nullity 定理
+
+上面那段关于 delta 峰的讨论，完全可以用最基础的线性代数语言来理解。
+
+定义线性映射
+$$
+T:\mathbb R^p\to \mathbb R^{n+d},
+\qquad
+T(\mathbf v)
+=
+\begin{bmatrix}
+\mathbf\Omega^1\!\cdot\!\mathbf v\\
+\vdots\\
+\mathbf\Omega^n\!\cdot\!\mathbf v\\
+\mathbf W^\top \mathbf v
+\end{bmatrix}.
+$$
+
+那么“同时满足”
+$$
+\mathbf\Omega^\nu\cdot\mathbf v=0,\qquad
+\mathbf W^\top \mathbf v=0
+$$
+其实就是在说
+$$
+T(\mathbf v)=0,
+$$
+也就是 \(\mathbf v\in \ker(T)\)。
+
+线性代数里最基本的 rank-nullity 定理说：
+$$
+\dim\ker(T)+\operatorname{rank}(T)=p.
+$$
+
+而 \(\operatorname{rank}(T)\le n+d\)，因此
+$$
+\dim\ker(T)\ge p-(n+d).
+$$
+
+这就说明：只要 \(p\) 比 \(n+d\) 大很多，就一定存在大量非零向量 \(\mathbf v\) 同时落在这两个约束的核空间里。
+
+对这些向量，经验项和总体协方差项都“看不见”它们，于是只剩各向同性项 \(s_t^2I\) 在起作用：
+$$
+\mathbf U\mathbf v=s_t^2\mathbf v.
+$$
+
+因此 \(\lambda=s_t^2\) 处会积累起一个宏观比例的特征值，这就是 delta 峰。
+
 ---
 
 ## 12. 第一团块 \(\rho_1\)：慢模态，控制记忆时间
@@ -1136,6 +1908,28 @@ $$
 
 这是关于 \(q\) 的二次方程。
 
+如果你想更熟悉一点，也可以把它写成
+$$
+Aq^2+Bq+C=0
+$$
+的标准形式，其中
+$$
+A=cv_t^2(s_t^2-z),\qquad
+B=(s_t^2-z)+v_t^2-cv_t^2,\qquad
+C=-1.
+$$
+
+于是根就是
+$$
+q(z)=\frac{-B\pm\sqrt{B^2-4AC}}{2A}.
+$$
+
+这里最重要的不是把根真的完整背下来，而是要看到：
+
+- 只要平方根里面是正数，\(q(z)\) 就是实的；
+- 一旦平方根里面变成负数，\(q(z)\) 就会出现虚部；
+- 而谱密度正是从 \(q\) 的虚部读出来的。
+
 ### 12.3 谱边界 = 判别式为零
 
 设 \(z=\lambda+i0\)。当二次方程判别式为负时，\(q\) 出现虚部，于是谱密度非零。
@@ -1176,6 +1970,103 @@ s_t^2+v_t^2\left(1+\sqrt{\frac{\psi_p}{\psi_n}}\right)^2
 \right]
 }
 $$
+
+如果你以前学过一元二次函数，这里其实就是同一件事：
+
+- 判别式 \(>0\)：两个实根，对应 resolvent 没有虚部；
+- 判别式 \(=0\)：碰到边界；
+- 判别式 \(<0\)：根变成共轭复数对，对应谱密度出现。
+
+### 12.3.1 把判别式一步一步化到论文里的边界公式
+
+这一段论文原文写得比较快，我们把代数一步一步写开。
+
+从
+$$
+Aq^2+Bq+C=0
+$$
+出发，判别式是
+$$
+\Delta = B^2-4AC.
+$$
+
+代入
+$$
+A=cv_t^2(s_t^2-\lambda),\qquad
+B=(s_t^2-\lambda)+v_t^2(1-c),\qquad
+C=-1
+$$
+得到
+$$
+\Delta(\lambda)
+=
+\big((s_t^2-\lambda)+v_t^2(1-c)\big)^2
++4cv_t^2(s_t^2-\lambda).
+$$
+
+现在令
+$$
+x=\lambda-s_t^2,
+\qquad
+s_t^2-\lambda=-x,
+$$
+则
+$$
+\Delta(\lambda)
+=
+\big(-x+v_t^2(1-c)\big)^2-4cv_t^2x.
+$$
+
+把平方展开：
+$$
+\Delta(\lambda)
+=
+x^2-2xv_t^2(1-c)+v_t^4(1-c)^2-4cv_t^2x.
+$$
+
+把 \(x\) 的系数合并：
+$$
+-2v_t^2(1-c)-4cv_t^2
+=
+-2v_t^2(1+c),
+$$
+因此
+$$
+\Delta(\lambda)
+=
+x^2-2v_t^2(1+c)x+v_t^4(1-c)^2.
+$$
+
+这又是一个关于 \(x\) 的二次式。令 \(\Delta(\lambda)=0\)，得到
+$$
+x
+=
+v_t^2(1+c)\pm v_t^2\sqrt{(1+c)^2-(1-c)^2}.
+$$
+
+而
+$$
+(1+c)^2-(1-c)^2 = 4c,
+$$
+所以
+$$
+x
+=
+v_t^2(1+c)\pm 2v_t^2\sqrt c
+=
+v_t^2(1\pm \sqrt c)^2.
+$$
+
+最后把 \(x=\lambda-s_t^2\) 代回去，就得到
+$$
+\lambda_\pm
+=
+s_t^2 + v_t^2(1\pm \sqrt c)^2
+=
+s_t^2 + v_t^2\left(1\pm \sqrt{\frac{\psi_p}{\psi_n}}\right)^2.
+$$
+
+这就是论文里的边界公式。
 
 ### 12.4 为什么它对应记忆时间
 
@@ -1273,6 +2164,78 @@ $$
 $$
 \mathcal O(\psi_p).
 $$
+
+### 13.3.1 什么叫 Wishart 型矩阵
+
+如果
+$$
+X\in\mathbb R^{p\times d}
+$$
+的每一列都是均值为零的随机向量，那么
+$$
+XX^\top
+$$
+就是最典型的样本协方差型矩阵。
+
+当列向量是高斯时，这类矩阵的分布就叫 Wishart 分布；即使不是严格高斯，只要满足合适条件，它的谱行为通常也仍然接近 Wishart / Marchenko--Pastur 类。
+
+因此
+$$
+\frac{\mathbf W\mathbf\Sigma_t\mathbf W^\top}{d}
+$$
+之所以被称作 Wishart 型，是因为你可以把
+$$
+\mathbf Y:=\mathbf W\mathbf\Sigma_t^{1/2}
+$$
+看成一个“带协方差结构的随机设计矩阵”，于是
+$$
+\frac{\mathbf W\mathbf\Sigma_t\mathbf W^\top}{d}
+=
+\frac{\mathbf Y\mathbf Y^\top}{d}
+$$
+就是样本协方差矩阵的标准形式。
+
+从直觉上说：
+
+- \(\mathbf\Sigma_t\) 决定总体上哪些方向方差大、哪些方向方差小；
+- \(\mathbf W\) 把这些方向随机投影到 \(p\) 维特征空间；
+- 最后得到的 Gram / 协方差矩阵的谱，就描述了“总体结构在随机特征空间里长什么样”。
+
+### 13.3.2 如果 \(\mathbf\Sigma_t=I\)，它就退化成最熟悉的 Marchenko--Pastur 情形
+
+为了和你熟悉的线性代数对象接上，我们看最简单的各向同性情形：
+$$
+\mathbf\Sigma_t = I_d.
+$$
+
+此时
+$$
+\frac{\mathbf W\mathbf\Sigma_t\mathbf W^\top}{d}
+=
+\frac{\mathbf W\mathbf W^\top}{d}.
+$$
+
+如果 \(\mathbf W\) 的元素是 iid 高斯，那么这就是教科书级别的 Wishart 矩阵。
+
+在 \(p,d\to\infty\) 且 \(p/d\to \psi_p\) 时，它的非零特征值会集中在一个 Marchenko--Pastur 区间里，尺度大约是
+$$
+\big(1\pm \sqrt{\psi_p}\big)^2.
+$$
+
+所以当 \(\psi_p\) 很大时，典型特征值大小确实就是
+$$
+\mathcal O(\psi_p).
+$$
+
+这正是作者说
+$$
+\lambda_{\mathrm{gen}}\sim \psi_p
+$$
+的最朴素来源。
+
+也就是说，\(\rho_2\) 并不神秘，它本质上就是：
+
+> 一个带总体协方差 \(\Sigma_t\) 的 Wishart 型矩阵所产生的“大尺度 bulk”。
 
 于是第二个时间尺度是
 $$

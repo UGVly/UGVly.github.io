@@ -145,19 +145,19 @@ img {
 .hero-copy::before {
   content: "";
   position: absolute;
-  top: 28px;
-  right: -36px;
-  width: 42%;
+  top: 34px;
+  right: -22px;
+  width: 34%;
   height: calc(100% - 56px);
   border-radius: 28px 0 0 28px;
   background:
-    linear-gradient(90deg, rgba(255, 255, 255, 0), rgba(255, 255, 255, 0.08)),
-    linear-gradient(180deg, rgba(16, 19, 33, 0.06), rgba(16, 19, 33, 0.12)),
-    url("./assets/images/mai-hero.jpg");
+    linear-gradient(90deg, rgba(255, 255, 255, 0.08), rgba(255, 255, 255, 0.22)),
+    linear-gradient(180deg, rgba(16, 19, 33, 0.02), rgba(16, 19, 33, 0.08)),
+    url("./assets/images/mai-private/mai-lucifer.jpg");
   background-size: cover;
-  background-position: 68% center;
-  opacity: 0.14;
-  filter: saturate(0.82) contrast(0.94);
+  background-position: 56% center;
+  opacity: 0.1;
+  filter: saturate(0.74) contrast(0.92);
   pointer-events: none;
 }
 
@@ -288,11 +288,11 @@ h1 span {
   background:
     linear-gradient(90deg, rgba(255, 255, 255, 0), rgba(255, 255, 255, 0.1)),
     linear-gradient(180deg, rgba(16, 19, 33, 0.04), rgba(16, 19, 33, 0.1)),
-    url("./assets/images/mai-hero.jpg");
+    url("./assets/images/mai-private/mai-fanofanime2.png");
   background-size: cover;
-  background-position: 78% center;
-  opacity: 0.14;
-  filter: saturate(0.78);
+  background-position: 74% 46%;
+  opacity: 0.16;
+  filter: saturate(0.84) contrast(0.96);
   pointer-events: none;
 }
 
@@ -351,6 +351,57 @@ h1 span {
   font-size: 0.9rem;
 }
 
+.visitor-counter {
+  margin-top: 18px;
+  padding-top: 18px;
+  border-top: 1px solid var(--line);
+}
+
+.visitor-counter-title {
+  margin-bottom: 8px;
+}
+
+.visitor-counter-note {
+  margin: 0;
+  color: var(--muted);
+  font-size: 0.9rem;
+  line-height: 1.6;
+}
+
+.visitor-grid {
+  display: grid;
+  grid-template-columns: repeat(3, minmax(0, 1fr));
+  gap: 12px;
+  margin-top: 14px;
+}
+
+.visitor-grid article {
+  padding: 14px 16px;
+  border-radius: 18px;
+  background: rgba(255, 255, 255, 0.28);
+  border: 1px solid var(--line);
+}
+
+.visitor-grid strong {
+  display: block;
+  margin-bottom: 6px;
+  font-size: 1.2rem;
+}
+
+.visitor-grid span {
+  color: var(--muted);
+  font-size: 0.88rem;
+  line-height: 1.45;
+}
+
+.visitor-counter[data-state="ready"] .visitor-counter-note {
+  color: var(--accent);
+}
+
+.visitor-counter[data-state="error"] .visitor-counter-note {
+  color: var(--accent-2);
+}
+
 .panel {
   position: relative;
   overflow: hidden;
@@ -376,11 +427,11 @@ h1 span {
   background:
     linear-gradient(90deg, rgba(255, 255, 255, 0), rgba(255, 255, 255, 0.08)),
     linear-gradient(180deg, rgba(16, 19, 33, 0.04), rgba(16, 19, 33, 0.1)),
-    url("./assets/images/mai-hero.jpg");
+    url("./assets/images/mai-private/mai-lucifer.jpg");
   background-size: cover;
-  background-position: 74% center;
-  opacity: 0.11;
-  filter: saturate(0.8);
+  background-position: 58% center;
+  opacity: 0.12;
+  filter: saturate(0.82) contrast(0.95);
 }
 
 #research::before {
@@ -391,11 +442,11 @@ h1 span {
   border-radius: 50%;
   background:
     radial-gradient(circle, rgba(255, 255, 255, 0.08), rgba(255, 255, 255, 0)),
-    url("./assets/images/mai-hero.jpg");
+    url("./assets/images/mai-private/mai-soda.jpg");
   background-size: cover;
-  background-position: 74% center;
-  opacity: 0.08;
-  filter: blur(2px) saturate(0.8);
+  background-position: 54% 42%;
+  opacity: 0.09;
+  filter: blur(2px) saturate(0.78);
 }
 
 #publications::before {
@@ -405,11 +456,11 @@ h1 span {
   border-radius: 24px;
   background:
     linear-gradient(180deg, rgba(255, 255, 255, 0.04), rgba(255, 255, 255, 0)),
-    url("./assets/images/mai-hero.jpg");
+    url("./assets/images/mai-private/mai-fanofanime2.png");
   background-size: cover;
-  background-position: 68% center;
-  opacity: 0.08;
-  filter: saturate(0.8);
+  background-position: 72% 44%;
+  opacity: 0.1;
+  filter: saturate(0.84) contrast(0.97);
 }
 
 #contact::before {
@@ -421,11 +472,11 @@ h1 span {
   background:
     linear-gradient(90deg, rgba(255, 255, 255, 0), rgba(255, 255, 255, 0.08)),
     linear-gradient(180deg, rgba(16, 19, 33, 0.04), rgba(16, 19, 33, 0.1)),
-    url("./assets/images/mai-hero.jpg");
+    url("./assets/images/mai-private/mai-lucifer.jpg");
   background-size: cover;
-  background-position: 74% center;
-  opacity: 0.1;
-  filter: saturate(0.8);
+  background-position: 60% center;
+  opacity: 0.11;
+  filter: saturate(0.82) contrast(0.95);
 }
 
 .panel > * {
@@ -670,6 +721,10 @@ h1 span {
   }
 
   .stat-grid {
+    grid-template-columns: 1fr;
+  }
+
+  .visitor-grid {
     grid-template-columns: 1fr;
   }
 

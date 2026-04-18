@@ -1231,7 +1231,7 @@ function pageTemplate({
         background: rgba(255, 255, 255, 0.42);
       }
       .note-content img {
-        margin: 1.7rem 0;
+        margin: 1.7rem auto;
         border-radius: 22px;
         border: 1px solid var(--line);
         box-shadow: var(--shadow);
